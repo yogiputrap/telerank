@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from '../components/Header';
 import { HeroPodiumCard } from '../components/HeroPodiumCard';
 import { HeroListingBar } from '../components/HeroListingBar';
@@ -12,7 +12,8 @@ import { BotDetailModal } from '../components/BotDetailModal';
 import { PayKitaQRISModal } from '../components/PayKitaQRISModal';
 import { Footer } from '../components/Footer';
 import { INITIAL_BOTS, INITIAL_NOTIFICATIONS } from '../lib/mockData';
-import { Bot, BotCategory, OutbidNotification, BOT_CATEGORIES, CATEGORY_LABELS } from '../types';
+import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../lib/storage';
+import { Bot, BotCategory, OutbidNotification, BOT_CATEGORIES } from '../types';
 
 const CATEGORIES: { id: BotCategory; label: string }[] = [
   { id: 'ALL', label: 'Semua' },
@@ -25,6 +26,23 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<BotCategory>('ALL');
   const [timeFilter, setTimeFilter] = useState<'ALL' | 'TODAY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Load from storage upon mount for persistence
+  useEffect(() => {
+    setBots(getStoredBots());
+    setNotifications(getStoredNotifications());
+  }, []);
+
+  // Save to storage whenever bots or notifications change
+  const updateBots = (newBots: Bot[]) => {
+    setBots(newBots);
+    saveStoredBots(newBots);
+  };
+
+  const updateNotifications = (newNotifs: OutbidNotification[]) => {
+    setNotifications(newNotifs);
+    saveStoredNotifications(newNotifs);
+  };
 
   // Modals
   const [rebutModalOpen, setRebutModalOpen] = useState(false);
@@ -59,10 +77,18 @@ export default function Home() {
     existingBotId?: string;
   } | null>(null);
 
-  // Sort bots descending by bid amount
-  const sortedBots = [...bots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
+  // Sort bots descending by bid amount (or by daily clicks if timeFilter is TODAY)
+  const sortedBots = [...bots].sort((a, b) => {
+    if (timeFilter === 'TODAY') {
+      // In TODAY mode, sort by combined momentum (daily clicks + bid weight)
+      const weightA = a.total_bid_amount + a.daily_clicks * 5000;
+      const weightB = b.total_bid_amount + b.daily_clicks * 5000;
+      return weightB - weightA;
+    }
+    return b.total_bid_amount - a.total_bid_amount;
+  });
 
-  // Filter bots
+  // Filter bots by category and search
   const filteredBots = sortedBots.filter((bot) => {
     const matchCategory = activeCategory === 'ALL' || bot.category === activeCategory;
     const matchSearch =
@@ -77,6 +103,14 @@ export default function Home() {
   const rank4to10Bots = filteredBots.slice(3, 10);
   const restBots = filteredBots.slice(10);
 
+  // Increment clicks when user interacts with a bot
+  const handleIncrementClick = (botId: string) => {
+    const updated = bots.map((b) =>
+      b.id === botId ? { ...b, daily_clicks: b.daily_clicks + 1 } : b
+    );
+    updateBots(updated);
+  };
+
   // Handlers
   const handleOpenRebut = (bot: Bot) => {
     const rank = sortedBots.findIndex((b) => b.id === bot.id) + 1;
@@ -87,6 +121,7 @@ export default function Home() {
 
   const handleOpenDetail = (bot: Bot) => {
     const rank = sortedBots.findIndex((b) => b.id === bot.id) + 1;
+    handleIncrementClick(bot.id);
     setSelectedBotForDetail(bot);
     setDetailRank(rank);
     setDetailModalOpen(true);
@@ -124,6 +159,11 @@ export default function Home() {
         qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
         isTopUp: true,
         existingBotId: existing.id,
+        targetBotData: {
+          bot_name: data.botName,
+          category: data.category,
+          description: data.description,
+        },
       });
     } else {
       const newBotData: Partial<Bot> = {
@@ -178,6 +218,11 @@ export default function Home() {
         qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
         isTopUp: true,
         existingBotId: existing.id,
+        targetBotData: {
+          bot_name: data.challengerBotName,
+          category: data.challengerCategory,
+          description: data.challengerDescription,
+        },
       });
     } else {
       const newBotData: Partial<Bot> = {
@@ -212,25 +257,26 @@ export default function Home() {
   const handlePaymentSuccess = () => {
     if (!pendingOrder) return;
 
-    if (pendingOrder.isTopUp && pendingOrder.existingBotId) {
-      setBots((prev) =>
-        prev.map((b) =>
-          b.id === pendingOrder.existingBotId
-            ? { ...b, total_bid_amount: pendingOrder.amount }
-            : b
-        )
-      );
+    let updatedBots: Bot[] = [];
+    let oldRank = 99;
+    let newRank = 1;
 
-      const newNotif: OutbidNotification = {
-        id: `notif-${Date.now()}`,
-        bot_name: pendingOrder.botName,
-        telegram_username: pendingOrder.telegramUsername,
-        old_rank: 2,
-        new_rank: 1,
-        amount_added: pendingOrder.amount,
-        timestamp: 'Baru saja',
-      };
-      setNotifications((prev) => [newNotif, ...prev.slice(0, 7)]);
+    if (pendingOrder.isTopUp && pendingOrder.existingBotId) {
+      // Find old rank
+      const prevIdx = sortedBots.findIndex((b) => b.id === pendingOrder.existingBotId);
+      if (prevIdx !== -1) oldRank = prevIdx + 1;
+
+      updatedBots = bots.map((b) =>
+        b.id === pendingOrder.existingBotId
+          ? {
+              ...b,
+              bot_name: pendingOrder.targetBotData?.bot_name || pendingOrder.botName || b.bot_name,
+              description: pendingOrder.targetBotData?.description || b.description,
+              category: pendingOrder.targetBotData?.category || b.category,
+              total_bid_amount: pendingOrder.amount,
+            }
+          : b
+      );
     } else if (pendingOrder.targetBotData) {
       const newBot: Bot = {
         id: `bot-${Date.now()}`,
@@ -248,19 +294,29 @@ export default function Home() {
         created_at: new Date().toISOString(),
       };
 
-      setBots((prev) => [newBot, ...prev]);
-
-      const newNotif: OutbidNotification = {
-        id: `notif-${Date.now()}`,
-        bot_name: newBot.bot_name,
-        telegram_username: newBot.telegram_username,
-        old_rank: 99,
-        new_rank: 1,
-        amount_added: pendingOrder.amount,
-        timestamp: 'Baru saja',
-      };
-      setNotifications((prev) => [newNotif, ...prev.slice(0, 7)]);
+      updatedBots = [newBot, ...bots];
     }
+
+    // Recalculate true dynamic new rank
+    const newSorted = [...updatedBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
+    const targetUsername = pendingOrder.telegramUsername.toLowerCase();
+    const computedIdx = newSorted.findIndex(
+      (b) => b.telegram_username.toLowerCase() === targetUsername
+    );
+    if (computedIdx !== -1) newRank = computedIdx + 1;
+
+    updateBots(updatedBots);
+
+    const newNotif: OutbidNotification = {
+      id: `notif-${Date.now()}`,
+      bot_name: pendingOrder.botName,
+      telegram_username: pendingOrder.telegramUsername,
+      old_rank: oldRank,
+      new_rank: newRank,
+      amount_added: pendingOrder.amount,
+      timestamp: 'Baru saja',
+    };
+    updateNotifications([newNotif, ...notifications.slice(0, 7)]);
   };
 
   return (
@@ -417,7 +473,7 @@ export default function Home() {
             type="button"
             className="w-full py-3 rounded-2xl bg-white hover:bg-[#eef5fc] border border-[#e4ecf2] text-[#3390ec] font-bold text-xs sm:text-sm shadow-2xs transition-colors cursor-pointer"
           >
-            Tampilkan 80 bot lainnya
+            Tampilkan {Math.max(0, bots.length)} bot terdaftar
           </button>
         </div>
       </main>

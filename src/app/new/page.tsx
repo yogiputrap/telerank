@@ -1,13 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { PayKitaQRISModal } from '../../components/PayKitaQRISModal';
 import { MgcArrowRight, MgcSubtract, MgcAdd } from '../../components/MingCuteIcons';
-import { BotCategory, BOT_CATEGORIES } from '../../types';
+import { Bot, BotCategory, BOT_CATEGORIES, OutbidNotification } from '../../types';
+import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../../lib/storage';
 
 export default function NewListingPage() {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [botName, setBotName] = useState('');
   const [description, setDescription] = useState('');
@@ -29,27 +32,94 @@ export default function NewListingPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
-    if (!cleanUsername || amount < 10000) return;
+    const cleanBotName = botName.trim();
+    if (!cleanUsername || !cleanBotName || amount < 10000) return;
 
     const orderId = `TR-${Math.floor(100000 + Math.random() * 900000)}`;
 
     setPendingOrder({
       orderId,
-      botName: botName || `${cleanUsername} Bot`,
+      botName: cleanBotName,
       telegramUsername: cleanUsername,
       amount,
       payAmount: amount,
       qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
       targetBotData: {
         telegram_username: cleanUsername,
-        bot_name: botName || `${cleanUsername} Bot`,
-        description: description || 'Bot baru terverifikasi di TeleRank',
+        bot_name: cleanBotName,
+        description: description.trim() || 'Bot baru terverifikasi di TeleRank',
         category,
-        custom_tagline: tagline || '',
+        custom_tagline: tagline.trim() || '',
       },
     });
 
     setIsQRISModalOpen(true);
+  };
+
+  const handlePaymentSuccess = () => {
+    if (!pendingOrder) return;
+
+    const existingBots = getStoredBots();
+    const existingIdx = existingBots.findIndex(
+      (b) => b.telegram_username.toLowerCase() === pendingOrder.telegramUsername.toLowerCase()
+    );
+
+    let updatedBots: Bot[] = [];
+
+    if (existingIdx !== -1) {
+      updatedBots = existingBots.map((b, i) =>
+        i === existingIdx
+          ? {
+              ...b,
+              bot_name: pendingOrder.botName || b.bot_name,
+              description: pendingOrder.targetBotData?.description || b.description,
+              category: pendingOrder.targetBotData?.category || b.category,
+              total_bid_amount: pendingOrder.amount,
+            }
+          : b
+      );
+    } else {
+      const newBot: Bot = {
+        id: `bot-${Date.now()}`,
+        telegram_username: pendingOrder.telegramUsername,
+        bot_name: pendingOrder.botName,
+        avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${pendingOrder.telegramUsername}`,
+        description: pendingOrder.targetBotData?.description || 'Bot baru terverifikasi di TeleRank',
+        category: pendingOrder.targetBotData?.category || 'DOWNLOADER',
+        custom_tagline: pendingOrder.targetBotData?.custom_tagline || '',
+        total_bid_amount: pendingOrder.amount,
+        contact_handle: '08123456789',
+        is_verified: false,
+        is_online: true,
+        daily_clicks: 1,
+        created_at: new Date().toISOString(),
+      };
+      updatedBots = [newBot, ...existingBots];
+    }
+
+    saveStoredBots(updatedBots);
+
+    // Calculate new rank
+    const sorted = [...updatedBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
+    const newRank = sorted.findIndex(
+      (b) => b.telegram_username.toLowerCase() === pendingOrder.telegramUsername.toLowerCase()
+    ) + 1;
+
+    const newNotif: OutbidNotification = {
+      id: `notif-${Date.now()}`,
+      bot_name: pendingOrder.botName,
+      telegram_username: pendingOrder.telegramUsername,
+      old_rank: 99,
+      new_rank: newRank || 1,
+      amount_added: pendingOrder.amount,
+      timestamp: 'Baru saja',
+    };
+
+    const existingNotifs = getStoredNotifications();
+    saveStoredNotifications([newNotif, ...existingNotifs.slice(0, 7)]);
+
+    setIsQRISModalOpen(false);
+    router.push('/');
   };
 
   return (
@@ -91,7 +161,7 @@ export default function NewListingPage() {
             <p className="text-[11px] text-[#707579]">Masukkan username bot tanpa spasi (misal: TikGrab_Bot).</p>
           </div>
 
-          {/* Nama Tampilan Bot */}
+          {/* Nama Tampilan Bot (MANDATORY) */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-[#1c242b]">
               Nama Judul Bot <span className="text-rose-500">*</span>
@@ -106,7 +176,7 @@ export default function NewListingPage() {
             />
           </div>
 
-          {/* Kategori (100% Identik dengan Homepage) */}
+          {/* Kategori */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-[#1c242b]">
               Kategori Bot <span className="text-rose-500">*</span>
@@ -124,18 +194,23 @@ export default function NewListingPage() {
             </select>
           </div>
 
-          {/* Deskripsi Singkat */}
+          {/* Deskripsi Singkat (Maks 150 Karakter) */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-[#1c242b]">
-              Deskripsi Singkat Fitur <span className="text-rose-500">*</span>
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="block text-xs font-bold text-[#1c242b]">
+                Deskripsi Singkat Fitur <span className="text-[#707579] font-normal text-[11px]">(Opsional)</span>
+              </label>
+              <span className={`text-[10px] font-mono font-semibold ${description.length >= 140 ? 'text-amber-600 font-bold' : 'text-[#707579]'}`}>
+                {description.length}/150 karakter
+              </span>
+            </div>
             <textarea
-              required
               rows={3}
-              placeholder="Jelaskan fungsi bot dan keunggulan fitur yang kamu tawarkan..."
+              maxLength={150}
+              placeholder="Jelaskan fungsi bot dan keunggulan fitur yang kamu tawarkan (maksimal 150 karakter)..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+              className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec] resize-none"
             />
           </div>
 
@@ -194,7 +269,8 @@ export default function NewListingPage() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4"
+            disabled={!username.trim() || !botName.trim() || amount < 10000}
+            className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4 disabled:opacity-50"
           >
             <span>Lanjut Bayar QRIS Instan</span>
             <span className="font-mono text-amber-200 font-black">
@@ -212,10 +288,7 @@ export default function NewListingPage() {
           isOpen={isQRISModalOpen}
           onClose={() => setIsQRISModalOpen(false)}
           orderData={pendingOrder}
-          onPaymentSuccess={() => {
-            alert('Pembayaran berhasil! Bot kamu telah aktif di TeleRank.');
-            window.location.href = '/';
-          }}
+          onPaymentSuccess={handlePaymentSuccess}
         />
       )}
     </div>
