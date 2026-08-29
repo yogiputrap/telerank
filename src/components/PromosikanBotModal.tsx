@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight } from './MingCuteIcons';
+import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
 interface PromosikanBotModalProps {
@@ -17,7 +18,7 @@ interface PromosikanBotModalProps {
     category: BotCategory;
     description: string;
     amount: number;
-  }) => void;
+  }) => Promise<string | void>;
 }
 
 export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
@@ -34,12 +35,15 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   const [category, setCategory] = useState<BotCategory>(initialCategory || 'DOWNLOADER');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState<number>(initialAmount || 50000);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (isOpen) {
       setUsername(initialUsername || '');
       setCategory(initialCategory || 'DOWNLOADER');
       setAmount(initialAmount || 50000);
+      setError('');
     }
   }, [isOpen, initialUsername, initialCategory, initialAmount]);
 
@@ -71,19 +75,31 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
     setAmount(val);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
     const cleanBotName = botName.trim();
     if (!cleanUsername || !cleanBotName || amount < 10000) return;
+    const localError = usernameError(cleanUsername);
+    if (localError) {
+      setError(localError);
+      return;
+    }
 
-    onProceedPayment({
-      username: cleanUsername,
-      botName: cleanBotName,
-      category,
-      description: description.trim(),
-      amount,
-    });
+    setIsSubmitting(true);
+    setError('');
+    try {
+      const failure = await onProceedPayment({
+        username: cleanUsername,
+        botName: cleanBotName,
+        category,
+        description: description.trim(),
+        amount,
+      });
+      if (failure) setError(failure);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -271,17 +287,20 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
           </div>
 
           {/* Submit CTA */}
-          <div className="pt-2">
+          <div className="pt-2 space-y-1.5">
+            {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
             <button
               type="submit"
-              disabled={!username.trim() || !botName.trim() || amount < 10000}
+              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 10000}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Lanjut Bayar QRIS Instan</span>
-              <span className="font-mono text-amber-200 font-black">
-                Rp {amount.toLocaleString('id-ID')}
-              </span>
-              <MgcArrowRight size={14} />
+              <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>
+              {!isSubmitting && (
+                <span className="font-mono text-amber-200 font-black">
+                  Rp {amount.toLocaleString('id-ID')}
+                </span>
+              )}
+              {!isSubmitting && <MgcArrowRight size={14} />}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcCheckCircle } from './MingCuteIcons';
+import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
 interface RebutPosisiModalProps {
@@ -16,7 +17,7 @@ interface RebutPosisiModalProps {
     challengerCategory: BotCategory;
     amount: number;
     targetBot: Bot;
-  }) => void;
+  }) => Promise<string | void>;
 }
 
 export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
@@ -32,11 +33,14 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   const [botName, setBotName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (targetBot) {
       setAmount(targetBot.total_bid_amount + 1);
       setCategory(targetBot.category || 'DOWNLOADER');
+      setError('');
     }
   }, [targetBot]);
 
@@ -56,20 +60,32 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
     setAmount(val);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
     const cleanBotName = botName.trim();
     if (!cleanUsername || !cleanBotName || amount < minRequired) return;
+    const localError = usernameError(cleanUsername);
+    if (localError) {
+      setError(localError);
+      return;
+    }
 
-    onProceedPayment({
-      challengerUsername: cleanUsername,
-      challengerBotName: cleanBotName,
-      challengerDescription: description.trim(),
-      challengerCategory: category,
-      amount,
-      targetBot,
-    });
+    setIsSubmitting(true);
+    setError('');
+    try {
+      const failure = await onProceedPayment({
+        challengerUsername: cleanUsername,
+        challengerBotName: cleanBotName,
+        challengerDescription: description.trim(),
+        challengerCategory: category,
+        amount,
+        targetBot,
+      });
+      if (failure) setError(failure);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -272,17 +288,20 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
           </div>
 
           {/* Submit CTA */}
-          <div className="pt-2">
+          <div className="pt-2 space-y-1.5">
+            {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
             <button
               type="submit"
-              disabled={!username.trim() || !botName.trim() || amount < minRequired}
+              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < minRequired}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>Lanjut Bayar QRIS Instan</span>
-              <span className="font-mono text-amber-200 font-black">
-                Rp {amount.toLocaleString('id-ID')}
-              </span>
-              <MgcArrowRight size={14} />
+              <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>
+              {!isSubmitting && (
+                <span className="font-mono text-amber-200 font-black">
+                  Rp {amount.toLocaleString('id-ID')}
+                </span>
+              )}
+              {!isSubmitting && <MgcArrowRight size={14} />}
             </button>
           </div>
         </form>

@@ -125,3 +125,22 @@ export const MgcHeadphone: React.FC<IconProps> = ({ size = 20, className = '', .
     <path d="M12 2a10 10 0 0 0-10 10v6a3 3 0 0 0 3 3h2v-8H5v-1a7 7 0 0 1 14 0v1h-2v8h2a3 3 0 0 0 3-3v-6a10 10 0 0 0-10-10zm-5 13v4H5a1 1 0 0 1-1-1v-3h3zm13 3a1 1 0 0 1-1 1h-2v-4h3v3z" />
   </svg>
 );
+
+export const MgcDownload: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M13 12.172V3h-2v9.172L7.05 8.222 5.636 9.636 12 16l6.364-6.364-1.414-1.414L13 12.172zM4 18h16v2H4v-2z" />
+  </svg>
+);
+
+export const MgcFilePdf: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11zM8 15h2a2 2 0 0 0 2-2v-1a2 2 0 0 0-2-2H8v5zm2-3.5v-1.5h1a.5.5 0 0 1 .5.5v.5a.5.5 0 0 1-.5.5h-1zm3 3.5h1.5a2.5 2.5 0 0 0 2.5-2.5v-1a2.5 2.5 0 0 0-2.5-2.5H13v6zm1.5-4.5h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-1v-3z" />
+  </svg>
+);
+
+export const MgcLoading: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`animate-spin ${className}`} {...props}>
+    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+  </svg>
+);
+

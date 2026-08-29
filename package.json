@@ -1,7 +1,7 @@
 {
   "name": "telerank",
   "version": "1.0.0",
-  "description": "",
+  "description": "Telegram Bot Leaderboard & Showcase",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -12,18 +12,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.9.0",
-      "onFail": "download"
-    }
-  },
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.4",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "framer-motion": "^13.1.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.34.0",
     "next": "^16.3.3",
     "qrcode.react": "^4.2.0",

@@ -44,16 +44,17 @@ export const FloatingFeedbackSupport: React.FC = () => {
   // FAQ Accordion open index
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
-  const handleSubmitFeedback = (e: React.FormEvent) => {
+  const handleSubmitFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
-
-    // Simulate instant sending
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setMessage('');
-      setTelegramHandle('');
-    }, 1000);
+    try {
+      const response = await fetch('/api/feedback', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ feedbackType, telegramHandle, message }) });
+      if (!response.ok) throw new Error('FEEDBACK_FAILED');
+      setIsSubmitted(true);
+      setTimeout(() => { setMessage(''); setTelegramHandle(''); }, 1000);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

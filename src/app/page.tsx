@@ -13,6 +13,7 @@ import { PayKitaQRISModal } from '../components/PayKitaQRISModal';
 import { Footer } from '../components/Footer';
 import { INITIAL_BOTS, INITIAL_NOTIFICATIONS } from '../lib/mockData';
 import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../lib/storage';
+import { orderErrorMessage } from '../lib/orderErrors';
 import { Bot, BotCategory, OutbidNotification, BOT_CATEGORIES } from '../types';
 
 const CATEGORIES: { id: BotCategory; label: string }[] = [
@@ -22,26 +23,62 @@ const CATEGORIES: { id: BotCategory; label: string }[] = [
 
 export default function Home() {
   const [bots, setBots] = useState<Bot[]>(INITIAL_BOTS);
+  const [totalBotsCount, setTotalBotsCount] = useState<number>(INITIAL_BOTS.length);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [notifications, setNotifications] = useState<OutbidNotification[]>(INITIAL_NOTIFICATIONS);
   const [activeCategory, setActiveCategory] = useState<BotCategory>('ALL');
   const [timeFilter, setTimeFilter] = useState<'ALL' | 'TODAY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Load from storage upon mount for persistence
+  // Load backend data upon mount; local storage remains a development fallback.
   useEffect(() => {
-    setBots(getStoredBots());
-    setNotifications(getStoredNotifications());
+    let cancelled = false;
+    fetch('/api/bots?limit=100')
+      .then(async (response) => {
+        if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
+        const result = await response.json();
+        if (!cancelled && result.data?.length) {
+          setBots(result.data);
+          setTotalBotsCount(result.total ?? result.data.length);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setBots(getStoredBots());
+      });
+    fetch('/api/activity')
+      .then(async (response) => {
+        if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
+        const result = await response.json();
+        if (!cancelled && result.data) setNotifications(result.data);
+      })
+      .catch(() => {
+        if (!cancelled) setNotifications(getStoredNotifications());
+      });
+    return () => { cancelled = true; };
   }, []);
+
+  const handleLoadMore = async () => {
+    if (isLoadingMore || bots.length >= totalBotsCount) return;
+    setIsLoadingMore(true);
+    try {
+      const response = await fetch(`/api/bots?limit=100&offset=${bots.length}`);
+      if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
+      const result = await response.json();
+      if (result.data?.length) {
+        setBots((prev) => [...prev, ...result.data]);
+        setTotalBotsCount(result.total ?? bots.length + result.data.length);
+      }
+    } catch (error) {
+      console.error('Failed to load more bots', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // Save to storage whenever bots or notifications change
   const updateBots = (newBots: Bot[]) => {
     setBots(newBots);
     saveStoredBots(newBots);
-  };
-
-  const updateNotifications = (newNotifs: OutbidNotification[]) => {
-    setNotifications(newNotifs);
-    saveStoredNotifications(newNotifs);
   };
 
   // Modals
@@ -69,12 +106,14 @@ export default function Home() {
     orderId: string;
     botName: string;
     telegramUsername: string;
+    category?: string;
     amount: number;
     payAmount: number;
     qrisString: string;
-    targetBotData?: Partial<Bot>;
-    isTopUp?: boolean;
-    existingBotId?: string;
+    expiresAt: string;
+    checkoutUrl?: string | null;
+    sandbox?: boolean;
+    oldRank?: number;
   } | null>(null);
 
   // Sort bots descending by bid amount (or by daily clicks if timeFilter is TODAY)
@@ -108,6 +147,7 @@ export default function Home() {
     const updated = bots.map((b) =>
       b.id === botId ? { ...b, daily_clicks: b.daily_clicks + 1 } : b
     );
+    void fetch('/api/bots/click', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ botId, kind: 'detail' }) });
     updateBots(updated);
   };
 
@@ -137,65 +177,56 @@ export default function Home() {
     setPromoteModalOpen(true);
   };
 
-  const handleProceedPromotePayment = (data: {
+  const handleProceedPromotePayment = async (data: {
     username: string;
     botName: string;
     category: BotCategory;
     description: string;
     amount: number;
   }) => {
-    const orderId = `TR-${Math.floor(100000 + Math.random() * 900000)}`;
     const existing = bots.find(
       (b) => b.telegram_username.toLowerCase() === data.username.toLowerCase()
     );
+    const oldRank = existing
+      ? sortedBots.findIndex((b) => b.id === existing.id) + 1
+      : sortedBots.length + 1;
 
-    if (existing) {
-      setPendingOrder({
-        orderId,
-        botName: data.botName || existing.bot_name,
-        telegramUsername: data.username,
-        amount: data.amount,
-        payAmount: data.amount,
-        qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
-        isTopUp: true,
-        existingBotId: existing.id,
-        targetBotData: {
-          bot_name: data.botName,
-          category: data.category,
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          telegramUsername: data.username,
+          botName: data.botName,
           description: data.description,
-        },
+          category: data.category,
+          amount: data.amount,
+        }),
       });
-    } else {
-      const newBotData: Partial<Bot> = {
-        telegram_username: data.username,
-        bot_name: data.botName || `@${data.username}`,
-        avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${data.username}`,
-        description: data.description || `Bot Telegram resmi @${data.username} di TeleRank.`,
-        category: data.category,
-        custom_tagline: 'Bot baru terverifikasi di TeleRank',
-        contact_handle: '08123456789',
-        is_verified: false,
-        is_online: true,
-        daily_clicks: 1,
-      };
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'ORDER_FAILED');
 
       setPendingOrder({
-        orderId,
-        botName: newBotData.bot_name || data.username,
+        orderId: result.data.public_id,
+        botName: data.botName || existing?.bot_name || data.username,
         telegramUsername: data.username,
-        amount: data.amount,
-        payAmount: data.amount,
-        qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
-        targetBotData: newBotData,
-        isTopUp: false,
+        category: data.category,
+        amount: result.data.amount,
+        payAmount: result.data.pay_amount,
+        qrisString: result.data.qris,
+        expiresAt: result.data.expires_at,
+        checkoutUrl: result.data.checkout_url,
+        sandbox: result.data.sandbox,
+        oldRank,
       });
+      setPromoteModalOpen(false);
+      setIsQRISModalOpen(true);
+    } catch (err) {
+      return orderErrorMessage(err);
     }
-
-    setPromoteModalOpen(false);
-    setIsQRISModalOpen(true);
   };
 
-  const handleProceedRebutPayment = (data: {
+  const handleProceedRebutPayment = async (data: {
     challengerUsername: string;
     challengerBotName: string;
     challengerDescription: string;
@@ -203,120 +234,72 @@ export default function Home() {
     amount: number;
     targetBot: Bot;
   }) => {
-    const orderId = `TR-${Math.floor(100000 + Math.random() * 900000)}`;
     const existing = bots.find(
       (b) => b.telegram_username.toLowerCase() === data.challengerUsername.toLowerCase()
     );
+    const oldRank = existing
+      ? sortedBots.findIndex((b) => b.id === existing.id) + 1
+      : sortedBots.length + 1;
 
-    if (existing) {
-      setPendingOrder({
-        orderId,
-        botName: data.challengerBotName || existing.bot_name,
-        telegramUsername: data.challengerUsername,
-        amount: data.amount,
-        payAmount: data.amount,
-        qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
-        isTopUp: true,
-        existingBotId: existing.id,
-        targetBotData: {
-          bot_name: data.challengerBotName,
-          category: data.challengerCategory,
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          telegramUsername: data.challengerUsername,
+          botName: data.challengerBotName,
           description: data.challengerDescription,
-        },
+          category: data.challengerCategory,
+          amount: data.amount,
+        }),
       });
-    } else {
-      const newBotData: Partial<Bot> = {
-        telegram_username: data.challengerUsername,
-        bot_name: data.challengerBotName || `@${data.challengerUsername}`,
-        avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${data.challengerUsername}`,
-        description: data.challengerDescription || `Bot Telegram resmi @${data.challengerUsername} di TeleRank.`,
-        category: data.challengerCategory,
-        custom_tagline: 'Bot baru pemenang lelang posisi',
-        contact_handle: '08123456789',
-        is_verified: false,
-        is_online: true,
-        daily_clicks: 1,
-      };
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'ORDER_FAILED');
 
       setPendingOrder({
-        orderId,
-        botName: newBotData.bot_name || data.challengerUsername,
+        orderId: result.data.public_id,
+        botName: data.challengerBotName || existing?.bot_name || data.challengerUsername,
         telegramUsername: data.challengerUsername,
-        amount: data.amount,
-        payAmount: data.amount,
-        qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${data.amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
-        targetBotData: newBotData,
-        isTopUp: false,
+        category: data.challengerCategory,
+        amount: result.data.amount,
+        payAmount: result.data.pay_amount,
+        qrisString: result.data.qris,
+        expiresAt: result.data.expires_at,
+        checkoutUrl: result.data.checkout_url,
+        sandbox: result.data.sandbox,
+        oldRank,
       });
+      setRebutModalOpen(false);
+      setIsQRISModalOpen(true);
+    } catch (err) {
+      return orderErrorMessage(err);
     }
-
-    setRebutModalOpen(false);
-    setIsQRISModalOpen(true);
   };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = async () => {
     if (!pendingOrder) return;
 
-    let updatedBots: Bot[] = [];
-    let oldRank = 99;
-    let newRank = 1;
+    try {
+      const [botsResponse, activityResponse] = await Promise.all([
+        fetch('/api/bots?limit=100'),
+        fetch('/api/activity'),
+      ]);
+      if (!botsResponse.ok) throw new Error('BACKEND_UNAVAILABLE');
+      const botsResult = await botsResponse.json();
+      const freshBots: Bot[] = botsResult.data ?? [];
+      setBots(freshBots);
+      saveStoredBots(freshBots);
 
-    if (pendingOrder.isTopUp && pendingOrder.existingBotId) {
-      // Find old rank
-      const prevIdx = sortedBots.findIndex((b) => b.id === pendingOrder.existingBotId);
-      if (prevIdx !== -1) oldRank = prevIdx + 1;
-
-      updatedBots = bots.map((b) =>
-        b.id === pendingOrder.existingBotId
-          ? {
-              ...b,
-              bot_name: pendingOrder.targetBotData?.bot_name || pendingOrder.botName || b.bot_name,
-              description: pendingOrder.targetBotData?.description || b.description,
-              category: pendingOrder.targetBotData?.category || b.category,
-              total_bid_amount: pendingOrder.amount,
-            }
-          : b
-      );
-    } else if (pendingOrder.targetBotData) {
-      const newBot: Bot = {
-        id: `bot-${Date.now()}`,
-        telegram_username: pendingOrder.targetBotData.telegram_username || 'new_bot',
-        bot_name: pendingOrder.targetBotData.bot_name || 'New Bot',
-        avatar_url: pendingOrder.targetBotData.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${pendingOrder.telegramUsername}`,
-        description: pendingOrder.targetBotData.description || 'Bot baru di TeleRank',
-        category: pendingOrder.targetBotData.category || 'DOWNLOADER',
-        custom_tagline: pendingOrder.targetBotData.custom_tagline || '',
-        total_bid_amount: pendingOrder.amount,
-        contact_handle: pendingOrder.targetBotData.contact_handle || '',
-        is_verified: false,
-        is_online: true,
-        daily_clicks: 1,
-        created_at: new Date().toISOString(),
-      };
-
-      updatedBots = [newBot, ...bots];
+      if (activityResponse.ok) {
+        const activityResult = await activityResponse.json();
+        if (activityResult.data) {
+          setNotifications(activityResult.data);
+          saveStoredNotifications(activityResult.data);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to refresh bots after payment', error);
     }
-
-    // Recalculate true dynamic new rank
-    const newSorted = [...updatedBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
-    const targetUsername = pendingOrder.telegramUsername.toLowerCase();
-    const computedIdx = newSorted.findIndex(
-      (b) => b.telegram_username.toLowerCase() === targetUsername
-    );
-    if (computedIdx !== -1) newRank = computedIdx + 1;
-
-    updateBots(updatedBots);
-
-    const newNotif: OutbidNotification = {
-      id: `notif-${Date.now()}`,
-      bot_name: pendingOrder.botName,
-      telegram_username: pendingOrder.telegramUsername,
-      old_rank: oldRank,
-      new_rank: newRank,
-      amount_added: pendingOrder.amount,
-      timestamp: 'Baru saja',
-    };
-    updateNotifications([newNotif, ...notifications.slice(0, 7)]);
   };
 
   return (
@@ -468,14 +451,18 @@ export default function Home() {
         </div>
 
         {/* Show More Button */}
-        <div className="pt-3 text-center">
-          <button
-            type="button"
-            className="w-full py-3 rounded-2xl bg-white hover:bg-[#eef5fc] border border-[#e4ecf2] text-[#3390ec] font-bold text-xs sm:text-sm shadow-2xs transition-colors cursor-pointer"
-          >
-            Tampilkan {Math.max(0, bots.length)} bot terdaftar
-          </button>
-        </div>
+        {bots.length < totalBotsCount && (
+          <div className="pt-3 text-center">
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              className="w-full py-3 rounded-2xl bg-white hover:bg-[#eef5fc] border border-[#e4ecf2] text-[#3390ec] font-bold text-xs sm:text-sm shadow-2xs transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {isLoadingMore ? 'Memuat...' : `Tampilkan ${totalBotsCount - bots.length} bot lainnya`}
+            </button>
+          </div>
+        )}
       </main>
 
       {/* 4. Telegram Footer */}

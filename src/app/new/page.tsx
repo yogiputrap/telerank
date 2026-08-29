@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { PayKitaQRISModal } from '../../components/PayKitaQRISModal';
 import { MgcArrowRight, MgcSubtract, MgcAdd } from '../../components/MingCuteIcons';
-import { Bot, BotCategory, BOT_CATEGORIES, OutbidNotification } from '../../types';
-import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../../lib/storage';
+import { orderErrorMessage, usernameError } from '../../lib/orderErrors';
+import { Bot, BotCategory, BOT_CATEGORIES } from '../../types';
 
 export default function NewListingPage() {
   const router = useRouter();
@@ -15,11 +15,36 @@ export default function NewListingPage() {
   const [botName, setBotName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
-  const [tagline, setTagline] = useState('');
   const [amount, setAmount] = useState<number>(50000);
-
+  const [currentBots, setCurrentBots] = useState<Bot[]>([]);
   const [isQRISModalOpen, setIsQRISModalOpen] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/bots?limit=100')
+      .then(async (response) => {
+        if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
+        const result = await response.json();
+        if (!cancelled && result.data) setCurrentBots(result.data);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  const projectedRank = (() => {
+    const sorted = [...currentBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
+    let rank = sorted.length + 1;
+    for (let i = 0; i < sorted.length; i++) {
+      if (amount > sorted[i].total_bid_amount) {
+        rank = i + 1;
+        break;
+      }
+    }
+    return rank;
+  })();
 
   const handleDecrease = (val: number) => {
     setAmount((prev) => Math.max(10000, prev - val));
@@ -29,97 +54,53 @@ export default function NewListingPage() {
     setAmount((prev) => prev + val);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
     const cleanBotName = botName.trim();
     if (!cleanUsername || !cleanBotName || amount < 10000) return;
-
-    const orderId = `TR-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    setPendingOrder({
-      orderId,
-      botName: cleanBotName,
-      telegramUsername: cleanUsername,
-      amount,
-      payAmount: amount,
-      qrisString: `00020101021226590014ID.LINKAJA.WWW01189360091438202812080215081234567890520458125303360540${amount}5802ID5910TELERANK_ID6007JAKARTA62070703A016304E8A9`,
-      targetBotData: {
-        telegram_username: cleanUsername,
-        bot_name: cleanBotName,
-        description: description.trim() || 'Bot baru terverifikasi di TeleRank',
+    const localError = usernameError(cleanUsername);
+    if (localError) {
+      setError(localError);
+      return;
+    }
+    setIsSubmitting(true);
+    setError('');
+    try {
+      const response = await fetch('/api/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ telegramUsername: cleanUsername, botName: cleanBotName, description: description.trim(), category, amount }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'ORDER_FAILED');
+      setPendingOrder({
+        orderId: result.data.public_id,
+        botName: cleanBotName,
+        telegramUsername: cleanUsername,
         category,
-        custom_tagline: tagline.trim() || '',
-      },
-    });
-
-    setIsQRISModalOpen(true);
+        amount: result.data.amount,
+        payAmount: result.data.pay_amount,
+        qrisString: result.data.qris,
+        expiresAt: result.data.expires_at,
+        checkoutUrl: result.data.checkout_url,
+        sandbox: result.data.sandbox,
+      });
+      setIsQRISModalOpen(true);
+    } catch (err) {
+      setError(orderErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const [hasPaid, setHasPaid] = useState(false);
+
   const handlePaymentSuccess = () => {
-    if (!pendingOrder) return;
+    setHasPaid(true);
+  };
 
-    const existingBots = getStoredBots();
-    const existingIdx = existingBots.findIndex(
-      (b) => b.telegram_username.toLowerCase() === pendingOrder.telegramUsername.toLowerCase()
-    );
-
-    let updatedBots: Bot[] = [];
-
-    if (existingIdx !== -1) {
-      updatedBots = existingBots.map((b, i) =>
-        i === existingIdx
-          ? {
-              ...b,
-              bot_name: pendingOrder.botName || b.bot_name,
-              description: pendingOrder.targetBotData?.description || b.description,
-              category: pendingOrder.targetBotData?.category || b.category,
-              total_bid_amount: pendingOrder.amount,
-            }
-          : b
-      );
-    } else {
-      const newBot: Bot = {
-        id: `bot-${Date.now()}`,
-        telegram_username: pendingOrder.telegramUsername,
-        bot_name: pendingOrder.botName,
-        avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${pendingOrder.telegramUsername}`,
-        description: pendingOrder.targetBotData?.description || 'Bot baru terverifikasi di TeleRank',
-        category: pendingOrder.targetBotData?.category || 'DOWNLOADER',
-        custom_tagline: pendingOrder.targetBotData?.custom_tagline || '',
-        total_bid_amount: pendingOrder.amount,
-        contact_handle: '08123456789',
-        is_verified: false,
-        is_online: true,
-        daily_clicks: 1,
-        created_at: new Date().toISOString(),
-      };
-      updatedBots = [newBot, ...existingBots];
-    }
-
-    saveStoredBots(updatedBots);
-
-    // Calculate new rank
-    const sorted = [...updatedBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
-    const newRank = sorted.findIndex(
-      (b) => b.telegram_username.toLowerCase() === pendingOrder.telegramUsername.toLowerCase()
-    ) + 1;
-
-    const newNotif: OutbidNotification = {
-      id: `notif-${Date.now()}`,
-      bot_name: pendingOrder.botName,
-      telegram_username: pendingOrder.telegramUsername,
-      old_rank: 99,
-      new_rank: newRank || 1,
-      amount_added: pendingOrder.amount,
-      timestamp: 'Baru saja',
-    };
-
-    const existingNotifs = getStoredNotifications();
-    saveStoredNotifications([newNotif, ...existingNotifs.slice(0, 7)]);
-
+  const handleModalClose = () => {
     setIsQRISModalOpen(false);
-    router.push('/');
+    if (hasPaid) {
+      router.push('/');
+    }
   };
 
   return (
@@ -142,6 +123,19 @@ export default function NewListingPage() {
 
         {/* Form Card */}
         <form onSubmit={handleSubmit} className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-5">
+          {/* Projected Rank Banner */}
+          <div className="flex items-center justify-between p-3 rounded-2xl bg-[#eef5fc] border border-[#d2e5f8]">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-bold text-[#707579] uppercase">Estimasi Posisi yang Didapat:</span>
+              <div className="font-bold text-xs text-[#1c242b]">
+                Bot kamu akan menempati peringkat di leaderboard
+              </div>
+            </div>
+            <span className="px-3 py-1 rounded-xl bg-[#3390ec] text-white font-mono font-black text-sm shadow-xs">
+              #{projectedRank}
+            </span>
+          </div>
+
           {/* Username Bot */}
           <div className="space-y-1.5">
             <label className="block text-xs font-bold text-[#1c242b]">
@@ -236,6 +230,9 @@ export default function NewListingPage() {
                 <span className="font-mono text-xl sm:text-2xl text-[#3390ec] font-black">
                   Rp {amount.toLocaleString('id-ID')}
                 </span>
+                <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
+                  Mendapatkan Peringkat #{projectedRank}
+                </span>
               </div>
 
               <button
@@ -267,9 +264,10 @@ export default function NewListingPage() {
           </div>
 
           {/* Submit Button */}
+          {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
           <button
             type="submit"
-            disabled={!username.trim() || !botName.trim() || amount < 10000}
+            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 10000}
             className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4 disabled:opacity-50"
           >
             <span>Lanjut Bayar QRIS Instan</span>
@@ -286,7 +284,7 @@ export default function NewListingPage() {
       {pendingOrder && (
         <PayKitaQRISModal
           isOpen={isQRISModalOpen}
-          onClose={() => setIsQRISModalOpen(false)}
+          onClose={handleModalClose}
           orderData={pendingOrder}
           onPaymentSuccess={handlePaymentSuccess}
         />
