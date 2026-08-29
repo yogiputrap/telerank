@@ -183,6 +183,7 @@ export default function Home() {
     category: BotCategory;
     description: string;
     amount: number;
+    avatarUrl?: string;
   }) => {
     const existing = bots.find(
       (b) => b.telegram_username.toLowerCase() === data.username.toLowerCase()
@@ -201,6 +202,7 @@ export default function Home() {
           description: data.description,
           category: data.category,
           amount: data.amount,
+          avatarUrl: data.avatarUrl,
         }),
       });
       const result = await response.json();
@@ -233,6 +235,7 @@ export default function Home() {
     challengerCategory: BotCategory;
     amount: number;
     targetBot: Bot;
+    avatarUrl?: string;
   }) => {
     const existing = bots.find(
       (b) => b.telegram_username.toLowerCase() === data.challengerUsername.toLowerCase()
@@ -251,6 +254,7 @@ export default function Home() {
           description: data.challengerDescription,
           category: data.challengerCategory,
           amount: data.amount,
+          avatarUrl: data.avatarUrl,
         }),
       });
       const result = await response.json();

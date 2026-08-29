@@ -29,13 +29,15 @@ export async function POST(request: Request) {
     const { data: existing } = await supabase.from('bots').select('id,current_sponsor_amount').eq('telegram_username', username).maybeSingle();
     if (existing && amount <= existing.current_sponsor_amount) return NextResponse.json({ error: 'AMOUNT_MUST_INCREASE' }, { status: 409 });
 
+    const avatarUrl = String(body.avatarUrl || '').trim() || `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
+
     const { data: order, error: insertError } = await supabase.from('payment_orders').insert({
       bot_id: existing?.id ?? null,
       purpose: existing ? 'replace_sponsor' : 'listing',
       telegram_username: username,
       amount,
       target_amount: existing?.current_sponsor_amount ?? null,
-      draft_data: existing ? null : { bot_name: botName, category, description, avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${username}` },
+      draft_data: existing ? null : { bot_name: botName, category, description, avatar_url: avatarUrl },
       provider: isPaykitaConfigured() ? 'paykita' : 'sandbox',
     }).select('id,public_id,amount').single();
     if (insertError) throw insertError;

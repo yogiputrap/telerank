@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { PayKitaQRISModal } from '../../components/PayKitaQRISModal';
-import { MgcArrowRight, MgcSubtract, MgcAdd } from '../../components/MingCuteIcons';
+import { MgcArrowRight, MgcSubtract, MgcAdd, MgcLoading, MgcCheckCircle } from '../../components/MingCuteIcons';
 import { orderErrorMessage, usernameError } from '../../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../../types';
 
@@ -16,6 +16,9 @@ export default function NewListingPage() {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
   const [amount, setAmount] = useState<number>(50000);
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [isFetchingTg, setIsFetchingTg] = useState(false);
+  const [tgFetched, setTgfetcHed] = useState(false);
   const [currentBots, setCurrentBots] = useState<Bot[]>([]);
   const [isQRISModalOpen, setIsQRISModalOpen] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<any>(null);
@@ -33,6 +36,47 @@ export default function NewListingPage() {
       .catch(() => {});
     return () => { cancelled = true; };
   }, []);
+
+  // Auto-fetch Telegram bot info & avatar when username is entered
+  useEffect(() => {
+    const clean = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean)) {
+      setTgfetcHed(false);
+      return;
+    }
+
+    let isMounted = true;
+    const timer = setTimeout(async () => {
+      setIsFetchingTg(true);
+      try {
+        const res = await fetch(`/api/telegram/bot?username=${encodeURIComponent(clean)}`);
+        if (!res.ok) return;
+        const result = await res.json();
+        if (!isMounted || !result.success || !result.data) return;
+
+        const data = result.data;
+        if (data.avatarUrl) {
+          setAvatarUrl(data.avatarUrl);
+        }
+        if (data.botName) {
+          setBotName((prev) => (!prev || prev === clean ? data.botName : prev));
+        }
+        if (data.description) {
+          setDescription((prev) => (!prev ? data.description : prev));
+        }
+        setTgfetcHed(true);
+      } catch (err) {
+        console.error('Failed to auto-fetch Telegram info', err);
+      } finally {
+        if (isMounted) setIsFetchingTg(false);
+      }
+    }, 450);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [username]);
 
   const projectedRank = (() => {
     const sorted = [...currentBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
@@ -67,7 +111,18 @@ export default function NewListingPage() {
     setIsSubmitting(true);
     setError('');
     try {
-      const response = await fetch('/api/orders', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ telegramUsername: cleanUsername, botName: cleanBotName, description: description.trim(), category, amount }) });
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          telegramUsername: cleanUsername,
+          botName: cleanBotName,
+          description: description.trim(),
+          category,
+          amount,
+          avatarUrl: avatarUrl || undefined,
+        }),
+      });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'ORDER_FAILED');
       setPendingOrder({
@@ -149,10 +204,56 @@ export default function NewListingPage() {
                 placeholder="NamaBot_bot"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-8 pr-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+                className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
               />
+              {isFetchingTg && (
+                <span className="absolute right-3 text-[#3390ec]">
+                  <MgcLoading size={16} />
+                </span>
+              )}
             </div>
-            <p className="text-[11px] text-[#707579]">Masukkan username bot tanpa spasi (misal: TikGrab_Bot).</p>
+            <p className="text-[11px] text-[#707579]">
+              Masukkan username bot (misal: TikGrab_Bot). Nama, foto & bio akan terisi otomatis.
+            </p>
+
+            {/* Telegram Profile Auto-Sync Preview Card */}
+            {(isFetchingTg || tgFetched || avatarUrl) && username.trim().length >= 5 && (
+              <div className="flex items-center gap-3 p-2.5 bg-[#eef5fc] border border-[#d2e5f8] rounded-2xl animate-in fade-in duration-200 mt-2">
+                <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-white border border-[#c5def5] shrink-0 flex items-center justify-center shadow-2xs">
+                  <img
+                    src={avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${username || 'bot'}`}
+                    alt="Bot Avatar"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/bottts/svg?seed=${username || 'bot'}`;
+                    }}
+                  />
+                  {isFetchingTg && (
+                    <div className="absolute inset-0 bg-white/70 backdrop-blur-2xs flex items-center justify-center">
+                      <MgcLoading size={15} className="text-[#3390ec]" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-bold text-xs text-[#1c242b] truncate">
+                      {botName || `@${username.replace(/^@/, '')}`}
+                    </span>
+                    {tgFetched && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-bold shrink-0">
+                        <MgcCheckCircle size={10} />
+                        Auto-sync Telegram
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-[#707579] truncate">
+                    {isFetchingTg
+                      ? 'Mengambil foto, nama & bio dari Telegram...'
+                      : description || 'Foto profil & bio otomatis terdeteksi.'}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Nama Tampilan Bot (MANDATORY) */}

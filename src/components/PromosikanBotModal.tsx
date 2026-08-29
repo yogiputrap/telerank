@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight } from './MingCuteIcons';
+import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcLoading, MgcCheckCircle } from './MingCuteIcons';
 import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
@@ -18,6 +18,7 @@ interface PromosikanBotModalProps {
     category: BotCategory;
     description: string;
     amount: number;
+    avatarUrl?: string;
   }) => Promise<string | void>;
 }
 
@@ -35,6 +36,9 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   const [category, setCategory] = useState<BotCategory>(initialCategory || 'DOWNLOADER');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState<number>(initialAmount || 50000);
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [isFetchingTg, setIsFetchingTg] = useState(false);
+  const [tgFetched, setTgfetcHed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -44,8 +48,51 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
       setCategory(initialCategory || 'DOWNLOADER');
       setAmount(initialAmount || 50000);
       setError('');
+      setAvatarUrl('');
+      setTgfetcHed(false);
     }
   }, [isOpen, initialUsername, initialCategory, initialAmount]);
+
+  // Auto-fetch Telegram bot info & avatar when username is typed
+  useEffect(() => {
+    const clean = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean)) {
+      setTgfetcHed(false);
+      return;
+    }
+
+    let isMounted = true;
+    const timer = setTimeout(async () => {
+      setIsFetchingTg(true);
+      try {
+        const res = await fetch(`/api/telegram/bot?username=${encodeURIComponent(clean)}`);
+        if (!res.ok) return;
+        const result = await res.json();
+        if (!isMounted || !result.success || !result.data) return;
+
+        const data = result.data;
+        if (data.avatarUrl) {
+          setAvatarUrl(data.avatarUrl);
+        }
+        if (data.botName) {
+          setBotName((prev) => (!prev || prev === clean ? data.botName : prev));
+        }
+        if (data.description) {
+          setDescription((prev) => (!prev ? data.description : prev));
+        }
+        setTgfetcHed(true);
+      } catch (err) {
+        console.error('Failed to auto-fetch Telegram info', err);
+      } finally {
+        if (isMounted) setIsFetchingTg(false);
+      }
+    }, 450);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [username]);
 
   if (!isOpen) return null;
 
@@ -95,6 +142,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
         category,
         description: description.trim(),
         amount,
+        avatarUrl: avatarUrl || undefined,
       });
       if (failure) setError(failure);
     } finally {
@@ -156,9 +204,53 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                 placeholder="UsernameBot_bot"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full pl-8 pr-3.5 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+                className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
               />
+              {isFetchingTg && (
+                <span className="absolute right-3 text-[#3390ec]">
+                  <MgcLoading size={15} />
+                </span>
+              )}
             </div>
+
+            {/* Telegram Profile Auto-Sync Preview Card */}
+            {(isFetchingTg || tgFetched || avatarUrl) && username.trim().length >= 5 && (
+              <div className="flex items-center gap-2.5 p-2.5 bg-[#eef5fc] border border-[#d2e5f8] rounded-xl animate-in fade-in duration-200 mt-1.5">
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white border border-[#c5def5] shrink-0 flex items-center justify-center shadow-2xs">
+                  <img
+                    src={avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${username || 'bot'}`}
+                    alt="Bot Avatar"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/bottts/svg?seed=${username || 'bot'}`;
+                    }}
+                  />
+                  {isFetchingTg && (
+                    <div className="absolute inset-0 bg-white/70 backdrop-blur-2xs flex items-center justify-center">
+                      <MgcLoading size={14} className="text-[#3390ec]" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <span className="font-bold text-[11px] text-[#1c242b] truncate">
+                      {botName || `@${username.replace(/^@/, '')}`}
+                    </span>
+                    {tgFetched && (
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold shrink-0">
+                        <MgcCheckCircle size={9} />
+                        Telegram Sync
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-[#707579] truncate">
+                    {isFetchingTg
+                      ? 'Mengambil info dari Telegram...'
+                      : description || 'Foto profil & bio otomatis terdeteksi.'}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Input 2: Nama Judul Bot (MANDATORY) */}
