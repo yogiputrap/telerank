@@ -133,8 +133,6 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 title={`Klik untuk rebut #${2} ${bot2.bot_name}`}
               >
                 <div className="relative mb-1.5">
-                  <span className="absolute -left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs select-none">🌿</span>
-                  <span className="absolute -right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs select-none -scale-x-100">🌿</span>
                   <img
                     src={bot2.avatar_url}
                     alt={bot2.bot_name}
@@ -179,8 +177,6 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 title={`Klik untuk rebut #${1} ${bot1.bot_name}`}
               >
                 <div className="relative mb-1.5">
-                  <span className="absolute -left-3.5 top-1/2 -translate-y-1/2 text-amber-500 text-sm select-none">🌾</span>
-                  <span className="absolute -right-3.5 top-1/2 -translate-y-1/2 text-amber-500 text-sm select-none -scale-x-100">🌾</span>
                   <img
                     src={bot1.avatar_url}
                     alt={bot1.bot_name}
@@ -225,8 +221,6 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 title={`Klik untuk rebut #${3} ${bot3.bot_name}`}
               >
                 <div className="relative mb-1.5">
-                  <span className="absolute -left-3 top-1/2 -translate-y-1/2 text-cyan-500 text-xs select-none">🌿</span>
-                  <span className="absolute -right-3 top-1/2 -translate-y-1/2 text-cyan-500 text-xs select-none -scale-x-100">🌿</span>
                   <img
                     src={bot3.avatar_url}
                     alt={bot3.bot_name}
