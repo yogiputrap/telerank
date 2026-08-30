@@ -2,12 +2,14 @@ export type BotCategory = 'ALL' | 'DOWNLOADER' | 'AI' | 'ANON_CHAT' | 'GAME' | '
 
 export interface Bot {
   id: string;
+  rank?: number;
   telegram_username: string;
   bot_name: string;
   avatar_url: string;
   description: string;
   category: BotCategory;
   custom_tagline?: string;
+  current_sponsor_amount?: number;
   total_bid_amount: number;
   contact_handle?: string;
   is_verified?: boolean;

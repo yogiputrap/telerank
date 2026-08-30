@@ -136,15 +136,24 @@ export default function Home() {
     oldRank?: number;
   } | null>(null);
 
-  // Sort bots descending by bid amount (or by daily clicks if timeFilter is TODAY)
+  // Sort bots: Sponsor Amount is strictly the primary determinant of rank.
+  // When amounts are identical (tie):
+  // - In 'TODAY' mode: tie-breaker is daily_clicks (activity today) then registration time.
+  // - In 'ALL' mode: tie-breaker is database rank / first-come first-served registration time.
   const sortedBots = [...bots].sort((a, b) => {
+    // 1. Primary: Sponsor Amount (Descending)
+    const diffAmount = (b.total_bid_amount || 0) - (a.total_bid_amount || 0);
+    if (diffAmount !== 0) return diffAmount;
+
+    // 2. Tie-breaker when sponsor amount is equal:
     if (timeFilter === 'TODAY') {
-      // In TODAY mode, sort by combined momentum (daily clicks + bid weight)
-      const weightA = a.total_bid_amount + a.daily_clicks * 5000;
-      const weightB = b.total_bid_amount + b.daily_clicks * 5000;
-      return weightB - weightA;
+      const clickDiff = (b.daily_clicks || 0) - (a.daily_clicks || 0);
+      if (clickDiff !== 0) return clickDiff;
     }
-    return b.total_bid_amount - a.total_bid_amount;
+
+    // 3. Fallback stable tie-breaker:
+    if (a.rank && b.rank) return a.rank - b.rank;
+    return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
   });
 
   // Filter bots by category and search
@@ -164,11 +173,16 @@ export default function Home() {
 
   // Increment clicks when user interacts with a bot
   const handleIncrementClick = (botId: string) => {
-    const updated = bots.map((b) =>
-      b.id === botId ? { ...b, daily_clicks: b.daily_clicks + 1 } : b
+    setBots((prev) =>
+      prev.map((b) =>
+        b.id === botId ? { ...b, daily_clicks: (b.daily_clicks || 0) + 1 } : b
+      )
     );
-    void fetch('/api/bots/click', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ botId, kind: 'detail' }) });
-    updateBots(updated);
+    void fetch('/api/bots/click', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ botId, kind: 'detail' }),
+    });
   };
 
   // Handlers
