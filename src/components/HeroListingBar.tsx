@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MgcAdd, MgcSubtract, MgcArrowRight, MgcTelegram } from './MingCuteIcons';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
@@ -13,11 +13,19 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   currentBots,
   onSubmit,
 }) => {
-  const topBotAmount = currentBots[0]?.total_bid_amount || 1000000;
-  const defaultRecommendedBid = topBotAmount + 1;
+  const topBotAmount = currentBots[0]?.total_bid_amount;
+  const defaultRecommendedBid = topBotAmount ? topBotAmount + 1 : 50000;
   const [amount, setAmount] = useState<number>(defaultRecommendedBid);
+  const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
+
+  // Sync recommended amount when currentBots loads if not manually edited
+  useEffect(() => {
+    if (!hasManuallyEdited && currentBots.length > 0 && currentBots[0]?.total_bid_amount) {
+      setAmount(currentBots[0].total_bid_amount + 1);
+    }
+  }, [currentBots, hasManuallyEdited]);
 
   // Dynamic Calculation of Projected Rank based on current amount vs all bots
   const projectedRank = (() => {
@@ -32,6 +40,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   })();
 
   const handleDecrease = () => {
+    setHasManuallyEdited(true);
     if (amount > 100000) {
       setAmount((prev) => Math.max(1, prev - 10000));
     } else if (amount > 10000) {
@@ -42,6 +51,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   };
 
   const handleIncrease = () => {
+    setHasManuallyEdited(true);
     if (amount >= 100000) {
       setAmount((prev) => prev + 10000);
     } else if (amount >= 10000) {
@@ -52,6 +62,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   };
 
   const handleManualAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHasManuallyEdited(true);
     const raw = e.target.value.replace(/\D/g, '');
     const val = raw === '' ? 0 : parseInt(raw, 10);
     setAmount(val);

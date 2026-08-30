@@ -11,7 +11,6 @@ import { PromosikanBotModal } from '../components/PromosikanBotModal';
 import { BotDetailModal } from '../components/BotDetailModal';
 import { PayKitaQRISModal } from '../components/PayKitaQRISModal';
 import { Footer } from '../components/Footer';
-import { INITIAL_BOTS, INITIAL_NOTIFICATIONS } from '../lib/mockData';
 import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../lib/storage';
 import { orderErrorMessage } from '../lib/orderErrors';
 import { Bot, BotCategory, OutbidNotification, BOT_CATEGORIES } from '../types';
@@ -22,39 +21,60 @@ const CATEGORIES: { id: BotCategory; label: string }[] = [
 ];
 
 export default function Home() {
-  const [bots, setBots] = useState<Bot[]>(INITIAL_BOTS);
-  const [totalBotsCount, setTotalBotsCount] = useState<number>(INITIAL_BOTS.length);
+  const [bots, setBots] = useState<Bot[]>([]);
+  const [totalBotsCount, setTotalBotsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [notifications, setNotifications] = useState<OutbidNotification[]>(INITIAL_NOTIFICATIONS);
+  const [notifications, setNotifications] = useState<OutbidNotification[]>([]);
   const [activeCategory, setActiveCategory] = useState<BotCategory>('ALL');
   const [timeFilter, setTimeFilter] = useState<'ALL' | 'TODAY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Load backend data upon mount; local storage remains a development fallback.
+  // Load backend data upon mount
   useEffect(() => {
     let cancelled = false;
+    setIsLoading(true);
+
     fetch('/api/bots?limit=100')
       .then(async (response) => {
         if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
         const result = await response.json();
-        if (!cancelled && result.data?.length) {
-          setBots(result.data);
-          setTotalBotsCount(result.total ?? result.data.length);
+        if (!cancelled && result.data) {
+          const fresh = result.data;
+          setBots(fresh);
+          setTotalBotsCount(result.total ?? fresh.length);
+          saveStoredBots(fresh);
         }
       })
-      .catch(() => {
-        if (!cancelled) setBots(getStoredBots());
+      .catch((err) => {
+        console.error('Failed to load bots from backend', err);
+        if (!cancelled) {
+          const cached = getStoredBots();
+          setBots(cached);
+          setTotalBotsCount(cached.length);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
       });
+
     fetch('/api/activity')
       .then(async (response) => {
         if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
         const result = await response.json();
-        if (!cancelled && result.data) setNotifications(result.data);
+        if (!cancelled && result.data) {
+          setNotifications(result.data);
+          saveStoredNotifications(result.data);
+        }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Failed to load activity from backend', err);
         if (!cancelled) setNotifications(getStoredNotifications());
       });
-    return () => { cancelled = true; };
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleLoadMore = async () => {
@@ -408,6 +428,60 @@ export default function Home() {
 
         {/* 3. Telegram Bot Cards Section */}
         <div className="space-y-3 pt-1">
+          {/* Loading Skeleton */}
+          {isLoading && bots.length === 0 && (
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="rounded-3xl bg-white border border-[#e4ecf2] p-4 sm:p-5 shadow-xs flex items-center gap-3 sm:gap-4 animate-pulse"
+                >
+                  <div className="w-8 h-8 rounded-full bg-slate-200 shrink-0" />
+                  <div className="w-12 h-12 rounded-2xl bg-slate-200 shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-slate-200 rounded w-1/3" />
+                    <div className="h-3 bg-slate-100 rounded w-2/3" />
+                  </div>
+                  <div className="w-24 h-8 bg-slate-200 rounded-xl shrink-0" />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!isLoading && filteredBots.length === 0 && (
+            <div className="text-center py-12 px-4 rounded-3xl bg-white border border-[#e4ecf2] shadow-xs space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-[#eef5fc] text-[#3390ec] flex items-center justify-center mx-auto text-xl font-bold">
+                🤖
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-[#1c242b]">
+                {searchQuery || activeCategory !== 'ALL'
+                  ? 'Tidak ada bot yang sesuai filter'
+                  : 'Belum ada bot terdaftar'}
+              </h3>
+              <p className="text-xs text-[#707579] max-w-sm mx-auto">
+                {searchQuery || activeCategory !== 'ALL'
+                  ? 'Coba gunakan kata kunci pencarian lain atau pilih kategori Semua.'
+                  : 'Daftarkan bot Telegram kamu sekarang untuk langsung menempati posisi #1 teratas!'}
+              </p>
+              {!searchQuery && activeCategory === 'ALL' && (
+                <button
+                  onClick={() => {
+                    setPromoteInitialData({
+                      username: '',
+                      category: 'DOWNLOADER',
+                      amount: 50000,
+                    });
+                    setPromoteModalOpen(true);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#3390ec] text-white font-bold text-xs hover:bg-[#2481cc] transition-colors cursor-pointer shadow-xs"
+                >
+                  + Daftarkan Bot Pertama
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Top 1, 2, 3 Cards */}
           {top3Bots.map((bot, index) => (
             <BotCard
@@ -420,7 +494,7 @@ export default function Home() {
           ))}
 
           {/* Aktivitas Terbaru Section */}
-          <RecentActivitySection notifications={notifications} />
+          {notifications.length > 0 && <RecentActivitySection notifications={notifications} />}
 
           {/* Cards #4 to #10 */}
           {rank4to10Bots.map((bot, index) => (

@@ -126,7 +126,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
           {/* Right Column: 3D Top 3 Podium Cylinders in Telegram Colors */}
           <div className="shrink-0 flex items-end justify-center gap-2.5 sm:gap-3.5 pt-2 md:pt-0">
             {/* Rank 2 (Left, Sky Blue) */}
-            {bot2 && (
+            {bot2 ? (
               <div
                 className="flex flex-col items-center group/p2 cursor-pointer transition-transform duration-200 hover:-translate-y-1.5"
                 onClick={(e) => handlePodiumClick(e, bot2)}
@@ -151,10 +151,28 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   </span>
                 </div>
               </div>
+            ) : (
+              <div
+                className="flex flex-col items-center group/p2 cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+                onClick={onOpenSubmit}
+                title="Klaim Posisi #2"
+              >
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-dashed border-[#a2d2ff] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p2:border-[#3390ec] group-hover/p2:text-[#3390ec]">
+                  <MgcAdd size={16} />
+                </div>
+                <span className="text-[10px] font-bold text-[#707579] mb-1">
+                  Klaim #2
+                </span>
+                <div className="w-16 sm:w-20 h-24 sm:h-28 rounded-t-2xl bg-gradient-to-b from-[#e4f0fa] to-[#d2e5f8] flex flex-col items-center justify-start pt-2 border-t border-dashed border-[#a2d2ff]">
+                  <span className="text-[#3390ec]/60 text-2xl sm:text-3xl font-black">
+                    2
+                  </span>
+                </div>
+              </div>
             )}
 
             {/* Rank 1 (Center, Telegram Vibrant Blue - Tallest) */}
-            {bot1 && (
+            {bot1 ? (
               <div
                 className="flex flex-col items-center group/p1 cursor-pointer transition-transform duration-200 hover:-translate-y-2"
                 onClick={(e) => handlePodiumClick(e, bot1)}
@@ -179,10 +197,28 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   </span>
                 </div>
               </div>
+            ) : (
+              <div
+                className="flex flex-col items-center group/p1 cursor-pointer transition-transform duration-200 hover:-translate-y-1.5"
+                onClick={onOpenSubmit}
+                title="Klaim Posisi #1 Teratas"
+              >
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-[#3390ec] bg-white flex items-center justify-center text-[#3390ec] mb-1.5 shadow-md group-hover/p1:scale-105 transition-transform">
+                  <span className="text-xl">🏆</span>
+                </div>
+                <span className="text-xs font-black text-[#3390ec] mb-1">
+                  Klaim #1
+                </span>
+                <div className="w-20 sm:w-24 h-32 sm:h-38 rounded-t-2xl bg-gradient-to-b from-[#3390ec] via-[#2481cc] to-[#1c6fb3] flex flex-col items-center justify-start pt-2.5 border-t-2 border-white/80 shadow-lg shadow-blue-400/40">
+                  <span className="text-white text-3xl sm:text-4xl font-black drop-shadow-md opacity-95">
+                    1
+                  </span>
+                </div>
+              </div>
             )}
 
             {/* Rank 3 (Right, Soft Cyan - Lowest) */}
-            {bot3 && (
+            {bot3 ? (
               <div
                 className="flex flex-col items-center group/p3 cursor-pointer transition-transform duration-200 hover:-translate-y-1.5"
                 onClick={(e) => handlePodiumClick(e, bot3)}
@@ -203,6 +239,24 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 {/* 3D Cylinder Body */}
                 <div className="w-16 sm:w-20 h-18 sm:h-22 rounded-t-2xl bg-gradient-to-b from-[#cbf3f0] via-[#a6e8e4] to-[#7bd8d2] flex flex-col items-center justify-start pt-2 border-t-2 border-white/80 shadow-md shadow-teal-200/30">
                   <span className="text-white text-2xl sm:text-3xl font-black drop-shadow-xs opacity-95">
+                    3
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div
+                className="flex flex-col items-center group/p3 cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+                onClick={onOpenSubmit}
+                title="Klaim Posisi #3"
+              >
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-dashed border-[#7bd8d2] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p3:border-[#3390ec] group-hover/p3:text-[#3390ec]">
+                  <MgcAdd size={16} />
+                </div>
+                <span className="text-[10px] font-bold text-[#707579] mb-1">
+                  Klaim #3
+                </span>
+                <div className="w-16 sm:w-20 h-18 sm:h-22 rounded-t-2xl bg-gradient-to-b from-[#e8f8f7] to-[#d2f3f0] flex flex-col items-center justify-start pt-2 border-t border-dashed border-[#7bd8d2]">
+                  <span className="text-teal-600/60 text-2xl sm:text-3xl font-black">
                     3
                   </span>
                 </div>

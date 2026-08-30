@@ -1,20 +1,16 @@
 import { Bot, OutbidNotification } from '../types';
-import { INITIAL_BOTS, INITIAL_NOTIFICATIONS } from './mockData';
 
-const BOTS_STORAGE_KEY = 'telerank_bots_v1';
-const NOTIFS_STORAGE_KEY = 'telerank_notifs_v1';
+const BOTS_STORAGE_KEY = 'telerank_bots_v2';
+const NOTIFS_STORAGE_KEY = 'telerank_notifs_v2';
 
 export const getStoredBots = (): Bot[] => {
-  if (typeof window === 'undefined') return INITIAL_BOTS;
+  if (typeof window === 'undefined') return [];
   try {
     const data = localStorage.getItem(BOTS_STORAGE_KEY);
-    if (!data) {
-      localStorage.setItem(BOTS_STORAGE_KEY, JSON.stringify(INITIAL_BOTS));
-      return INITIAL_BOTS;
-    }
+    if (!data) return [];
     return JSON.parse(data);
   } catch {
-    return INITIAL_BOTS;
+    return [];
   }
 };
 
@@ -28,16 +24,13 @@ export const saveStoredBots = (bots: Bot[]) => {
 };
 
 export const getStoredNotifications = (): OutbidNotification[] => {
-  if (typeof window === 'undefined') return INITIAL_NOTIFICATIONS;
+  if (typeof window === 'undefined') return [];
   try {
     const data = localStorage.getItem(NOTIFS_STORAGE_KEY);
-    if (!data) {
-      localStorage.setItem(NOTIFS_STORAGE_KEY, JSON.stringify(INITIAL_NOTIFICATIONS));
-      return INITIAL_NOTIFICATIONS;
-    }
+    if (!data) return [];
     return JSON.parse(data);
   } catch {
-    return INITIAL_NOTIFICATIONS;
+    return [];
   }
 };
 
