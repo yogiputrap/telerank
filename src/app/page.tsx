@@ -108,7 +108,7 @@ export default function Home() {
   }>({
     username: '',
     category: 'DOWNLOADER',
-    amount: 50000,
+    amount: 1000,
   });
 
   const [isQRISModalOpen, setIsQRISModalOpen] = useState(false);
@@ -469,7 +469,7 @@ export default function Home() {
                     setPromoteInitialData({
                       username: '',
                       category: 'DOWNLOADER',
-                      amount: 50000,
+                      amount: sortedBots[0]?.total_bid_amount ? sortedBots[0].total_bid_amount + 1000 : 1000,
                     });
                     setPromoteModalOpen(true);
                   }}

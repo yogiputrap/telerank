@@ -35,7 +35,8 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   const [botName, setBotName] = useState('');
   const [category, setCategory] = useState<BotCategory>(initialCategory || 'DOWNLOADER');
   const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState<number>(initialAmount || 50000);
+  const defaultRecAmount = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+  const [amount, setAmount] = useState<number>(initialAmount || defaultRecAmount);
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [isFetchingTg, setIsFetchingTg] = useState(false);
   const [tgFetched, setTgfetcHed] = useState(false);
@@ -44,14 +45,15 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      const rec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
       setUsername(initialUsername || '');
       setCategory(initialCategory || 'DOWNLOADER');
-      setAmount(initialAmount || 50000);
+      setAmount(initialAmount || rec);
       setError('');
       setAvatarUrl('');
       setTgfetcHed(false);
     }
-  }, [isOpen, initialUsername, initialCategory, initialAmount]);
+  }, [isOpen, initialUsername, initialCategory, initialAmount, currentBots]);
 
   // Auto-fetch Telegram bot info & avatar when username is typed
   useEffect(() => {

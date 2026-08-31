@@ -25,13 +25,22 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   const [customTagline, setCustomTagline] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
   const [contactHandle, setContactHandle] = useState('');
-  const [bidAmount, setBidAmount] = useState<number>(30000);
+  const defaultRec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+  const [bidAmount, setBidAmount] = useState<number>(defaultRec);
   const [customAmountStr, setCustomAmountStr] = useState('');
   const [isCheckingBot, setIsCheckingBot] = useState(false);
   const [botChecked, setBotChecked] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80');
 
   const [usernameErr, setUsernameErr] = useState('');
+
+  React.useEffect(() => {
+    if (isOpen) {
+      const rec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+      setBidAmount(rec);
+      setCustomAmountStr('');
+    }
+  }, [isOpen, currentBots]);
 
   if (!isOpen) return null;
 

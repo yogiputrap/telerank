@@ -15,7 +15,8 @@ export default function NewListingPage() {
   const [botName, setBotName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
-  const [amount, setAmount] = useState<number>(50000);
+  const [amount, setAmount] = useState<number>(1000);
+  const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [isFetchingTg, setIsFetchingTg] = useState(false);
   const [tgFetched, setTgfetcHed] = useState(false);
@@ -31,11 +32,17 @@ export default function NewListingPage() {
       .then(async (response) => {
         if (!response.ok) throw new Error('BACKEND_UNAVAILABLE');
         const result = await response.json();
-        if (!cancelled && result.data) setCurrentBots(result.data);
+        if (!cancelled && result.data) {
+          setCurrentBots(result.data);
+          if (!hasManuallyEdited) {
+            const topBid = result.data[0]?.total_bid_amount;
+            setAmount(topBid ? topBid + 1000 : 1000);
+          }
+        }
       })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, []);
+  }, [hasManuallyEdited]);
 
   // Auto-fetch Telegram bot info & avatar when username is entered
   useEffect(() => {
@@ -93,10 +100,12 @@ export default function NewListingPage() {
   })();
 
   const handleDecrease = (val: number) => {
+    setHasManuallyEdited(true);
     setAmount((prev) => Math.max(1000, prev - val));
   };
 
   const handleIncrease = (val: number) => {
+    setHasManuallyEdited(true);
     setAmount((prev) => prev + val);
   };
 

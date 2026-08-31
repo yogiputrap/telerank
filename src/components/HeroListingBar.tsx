@@ -15,22 +15,24 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   onSubmit,
 }) => {
   const topBotAmount = currentBots[0]?.total_bid_amount;
-  const defaultRecommendedBid = topBotAmount ? topBotAmount + 1 : 50000;
+  const defaultRecommendedBid = topBotAmount ? topBotAmount + 1000 : 1000;
   const [amount, setAmount] = useState<number>(defaultRecommendedBid);
   const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
   const [inlineError, setInlineError] = useState('');
 
-  // Sync recommended amount when currentBots loads if not manually edited
+  // Dynamically sync recommended amount when currentBots loads/changes if not manually edited
   useEffect(() => {
-    if (!hasManuallyEdited && currentBots.length > 0 && currentBots[0]?.total_bid_amount) {
-      setAmount(currentBots[0].total_bid_amount + 1);
+    if (!hasManuallyEdited) {
+      const topBid = currentBots[0]?.total_bid_amount;
+      setAmount(topBid ? topBid + 1000 : 1000);
     }
   }, [currentBots, hasManuallyEdited]);
 
   // Dynamic Calculation of Projected Rank based on current amount vs all bots
   const projectedRank = (() => {
+    if (currentBots.length === 0) return 1;
     let rank = currentBots.length + 1;
     for (let i = 0; i < currentBots.length; i++) {
       if (amount > currentBots[i].total_bid_amount) {
@@ -44,11 +46,13 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   const handleDecrease = () => {
     setHasManuallyEdited(true);
     if (amount > 100000) {
-      setAmount((prev) => Math.max(1, prev - 10000));
+      setAmount((prev) => Math.max(1000, prev - 10000));
     } else if (amount > 10000) {
-      setAmount((prev) => Math.max(1, prev - 1000));
+      setAmount((prev) => Math.max(1000, prev - 5000));
+    } else if (amount > 1000) {
+      setAmount((prev) => Math.max(1000, prev - 1000));
     } else {
-      setAmount((prev) => Math.max(1, prev - 1));
+      setAmount(1000);
     }
   };
 
@@ -57,9 +61,9 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
     if (amount >= 100000) {
       setAmount((prev) => prev + 10000);
     } else if (amount >= 10000) {
-      setAmount((prev) => prev + 1000);
+      setAmount((prev) => prev + 5000);
     } else {
-      setAmount((prev) => prev + 1);
+      setAmount((prev) => prev + 1000);
     }
   };
 
@@ -90,6 +94,10 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
     const err = usernameError(cleanUsername);
     if (err) {
       setInlineError(err);
+      return;
+    }
+    if (amount < 1000) {
+      setInlineError('Nominal sponsor minimal Rp1.000.');
       return;
     }
     setInlineError('');

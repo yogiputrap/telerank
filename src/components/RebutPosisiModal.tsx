@@ -30,7 +30,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   currentBots,
   onProceedPayment,
 }) => {
-  const minRequired = targetBot ? targetBot.total_bid_amount + 1 : 1000;
+  const minRequired = targetBot ? targetBot.total_bid_amount + 1000 : 1000;
   const [amount, setAmount] = useState<number>(minRequired);
   const [username, setUsername] = useState('');
   const [botName, setBotName] = useState('');
@@ -44,7 +44,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
 
   useEffect(() => {
     if (targetBot) {
-      setAmount(targetBot.total_bid_amount + 1);
+      setAmount(targetBot.total_bid_amount + 1000);
       setCategory(targetBot.category || 'DOWNLOADER');
       setError('');
       setAvatarUrl('');
@@ -346,9 +346,9 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
             <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white transition-all">
               <button
                 type="button"
-                onClick={() => handleDecrease(1)}
+                onClick={() => handleDecrease(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
-                title="-1 Rupiah"
+                title="-1k Rupiah"
               >
                 <MgcSubtract size={14} />
               </button>
@@ -364,7 +364,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                     value={amount === 0 ? '' : amount.toLocaleString('id-ID')}
                     onChange={handleManualChange}
                     className="font-mono text-lg sm:text-2xl text-[#1c242b] font-black bg-transparent outline-none text-center w-full max-w-[180px]"
-                    placeholder="1.001"
+                    placeholder="1.000"
                   />
                 </div>
                 <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
@@ -374,9 +374,9 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
 
               <button
                 type="button"
-                onClick={() => handleAdd(1)}
+                onClick={() => handleAdd(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
-                title="+1 Rupiah"
+                title="+1k Rupiah"
               >
                 <MgcAdd size={14} />
               </button>
@@ -386,7 +386,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
             <div className="space-y-1 pt-1">
               <span className="text-[11px] font-semibold text-[#707579]">Tambah Cepat:</span>
               <div className="grid grid-cols-5 gap-1.5 text-center">
-                {[1, 100, 1000, 10000, 50000].map((step) => (
+                {[1000, 5000, 10000, 25000, 50000].map((step) => (
                   <button
                     type="button"
                     key={step}
