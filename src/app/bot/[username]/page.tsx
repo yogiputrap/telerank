@@ -223,7 +223,8 @@ export default function BotDetailPage() {
   }
 
   const categoryName = CATEGORY_LABELS[bot.category] || bot.category;
-  const botSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://telerank.com';
+  const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_BASE_URL || 'https://telerank.com';
+  const botSiteUrl = rawSiteUrl.replace(/\/$/, '');
 
   const botJsonLd = {
     '@context': 'https://schema.org',

@@ -70,7 +70,7 @@ export async function POST(request: Request) {
       }, { status: 201 });
     }
 
-    const appBaseUrl = process.env.APP_BASE_URL;
+    const appBaseUrl = (process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '');
     try {
       const paykitaOrder = await createPaykitaOrder({
         baseAmount: amount,
