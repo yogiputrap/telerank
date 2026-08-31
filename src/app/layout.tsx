@@ -112,6 +112,14 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
+        {/* Preconnect to external image & analytics CDN for fastest LCP */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://api.dicebear.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://api.dicebear.com" />
+        <link rel="preconnect" href="https://cloud.umami.is" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cloud.umami.is" />
+
         <Script
           defer
           src="https://cloud.umami.is/script.js"

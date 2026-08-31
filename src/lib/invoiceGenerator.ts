@@ -1,5 +1,3 @@
-import { jsPDF } from 'jspdf';
-
 export interface InvoiceData {
   orderId: string;
   botName: string;
@@ -11,7 +9,8 @@ export interface InvoiceData {
   paymentMethod?: string;
 }
 
-export function generateInvoicePDF(data: InvoiceData): void {
+export async function generateInvoicePDF(data: InvoiceData): Promise<void> {
+  const { jsPDF } = await import('jspdf');
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',

@@ -62,6 +62,10 @@ export const RecentActivitySection: React.FC<RecentActivitySectionProps> = ({
                     <img
                       src={avatarSrc}
                       alt={notif.bot_name}
+                      width={28}
+                      height={28}
+                      loading="lazy"
+                      decoding="async"
                       className="absolute inset-0 w-full h-full object-cover z-10"
                       onError={(e) => {
                         (e.currentTarget as HTMLElement).style.display = 'none';

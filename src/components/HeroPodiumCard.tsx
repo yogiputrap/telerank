@@ -3,7 +3,6 @@
 import React, { useRef } from 'react';
 import { MgcAdd, MgcTrophy } from './MingCuteIcons';
 import { Bot, BOT_CATEGORIES } from '../types';
-import confetti from 'canvas-confetti';
 
 interface HeroPodiumCardProps {
   topBots: Bot[];
@@ -23,7 +22,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
   const lastCelebration = useRef<number>(0);
 
-  const fireCelebration = (e?: React.MouseEvent) => {
+  const fireCelebration = async (e?: React.MouseEvent) => {
     const now = Date.now();
     // Cooldown 2 seconds to keep it smooth
     if (now - lastCelebration.current < 2000) return;
@@ -39,6 +38,9 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
     }
 
     try {
+      const confettiModule = await import('canvas-confetti');
+      const confetti = confettiModule.default || confettiModule;
+
       // 1. Telegram Blue & Gold Ribbon Burst
       confetti({
         particleCount: 40,
@@ -136,6 +138,9 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot2.avatar_url}
                     alt={bot2.bot_name}
+                    width={52}
+                    height={52}
+                    decoding="async"
                     className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p2:ring-2 group-hover/p2:ring-[#a2d2ff]"
                   />
                 </div>
@@ -180,6 +185,9 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot1.avatar_url}
                     alt={bot1.bot_name}
+                    width={64}
+                    height={64}
+                    decoding="async"
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-[#3390ec] shadow-lg group-hover/p1:scale-105 transition-transform"
                   />
                 </div>
@@ -224,7 +232,10 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot3.avatar_url}
                     alt={bot3.bot_name}
-                    className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p3:ring-2 group-hover/p3:ring-[#7bd8d2]"
+                    width={48}
+                    height={48}
+                    decoding="async"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p3:ring-2 group-hover/p3:ring-[#80beea]"
                   />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#1c242b] truncate max-w-[70px] sm:max-w-[85px] text-center mb-1">

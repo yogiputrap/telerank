@@ -119,6 +119,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             <button
               type="button"
               onClick={handleDecrease}
+              aria-label="Kurangi nominal sponsor"
               className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
               title="Kurangi nominal"
             >
@@ -133,6 +134,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
               <input
                 type="text"
                 inputMode="numeric"
+                aria-label="Nominal sponsor dalam rupiah"
                 value={amount === 0 ? '' : amount.toLocaleString('id-ID')}
                 onChange={handleManualAmountChange}
                 placeholder="1.000"
@@ -144,6 +146,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             <button
               type="button"
               onClick={handleIncrease}
+              aria-label="Tambah nominal sponsor"
               className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
               title="Tambah nominal"
             >
@@ -170,6 +173,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             id="fast-submit-input"
             type="text"
             required
+            aria-label="Username bot Telegram"
             placeholder="UsernameBot_bot (wajib akhiran 'bot')..."
             value={usernameInput}
             onChange={handleUsernameChange}
@@ -180,6 +184,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
         <div className="flex items-center gap-2">
           <select
             value={category}
+            aria-label="Pilih kategori bot"
             onChange={(e) => setCategory(e.target.value as BotCategory)}
             className="px-3 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
           >

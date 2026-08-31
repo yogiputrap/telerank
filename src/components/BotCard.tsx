@@ -55,6 +55,10 @@ export const BotCard: React.FC<BotCardProps> = ({
             <img
               src={bot.avatar_url}
               alt={bot.bot_name}
+              width={48}
+              height={48}
+              loading="lazy"
+              decoding="async"
               className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-cover border ${
                 isRank1
                   ? 'border-amber-300'

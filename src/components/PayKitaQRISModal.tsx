@@ -16,7 +16,6 @@ import {
   MgcLoading,
   MgcArrowRight,
 } from './MingCuteIcons';
-import confetti from 'canvas-confetti';
 import { generateInvoicePDF } from '../lib/invoiceGenerator';
 
 interface PayKitaQRISModalProps {
@@ -91,6 +90,8 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
           setPaidTimestamp(result.data?.paid_at || new Date().toISOString());
           setIsPaid(true);
           try {
+            const confettiMod = await import('canvas-confetti');
+            const confetti = confettiMod.default || confettiMod;
             confetti({
               particleCount: 120,
               spread: 80,
@@ -140,6 +141,8 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
           setPaidTimestamp(result.data?.paid_at || new Date().toISOString());
           setIsPaid(true);
           try {
+            const confettiMod = await import('canvas-confetti');
+            const confetti = confettiMod.default || confettiMod;
             confetti({
               particleCount: 120,
               spread: 80,
@@ -164,10 +167,10 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDownloadInvoice = () => {
+  const handleDownloadInvoice = async () => {
     setIsDownloadingPdf(true);
     try {
-      generateInvoicePDF({
+      await generateInvoicePDF({
         orderId: orderData.orderId,
         botName: orderData.botName,
         telegramUsername: orderData.telegramUsername,
