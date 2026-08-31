@@ -37,7 +37,7 @@ export default function NewListingPage() {
           setCurrentBots(result.data);
           if (!hasManuallyEdited) {
             const topBid = result.data[0]?.total_bid_amount;
-            setAmount(topBid ? topBid + 1000 : 1000);
+            setAmount(topBid ? Math.max(1000, topBid + 1) : 1000);
           }
         }
       })

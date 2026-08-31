@@ -25,7 +25,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   const [customTagline, setCustomTagline] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
   const [contactHandle, setContactHandle] = useState('');
-  const defaultRec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+  const defaultRec = currentBots[0]?.total_bid_amount ? Math.max(1000, currentBots[0].total_bid_amount + 1) : 1000;
   const [bidAmount, setBidAmount] = useState<number>(defaultRec);
   const [customAmountStr, setCustomAmountStr] = useState('');
   const [isCheckingBot, setIsCheckingBot] = useState(false);
@@ -36,7 +36,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
 
   React.useEffect(() => {
     if (isOpen) {
-      const rec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+      const rec = currentBots[0]?.total_bid_amount ? Math.max(1000, currentBots[0].total_bid_amount + 1) : 1000;
       setBidAmount(rec);
       setCustomAmountStr('');
     }

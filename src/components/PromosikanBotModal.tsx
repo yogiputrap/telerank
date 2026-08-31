@@ -46,7 +46,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      const rec = currentBots[0]?.total_bid_amount ? currentBots[0].total_bid_amount + 1000 : 1000;
+      const rec = currentBots[0]?.total_bid_amount ? Math.max(1000, currentBots[0].total_bid_amount + 1) : 1000;
       setUsername(initialUsername || '');
       setCategory(initialCategory || 'DOWNLOADER');
       setAmount(initialAmount || rec);

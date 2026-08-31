@@ -15,7 +15,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   onSubmit,
 }) => {
   const topBotAmount = currentBots[0]?.total_bid_amount;
-  const defaultRecommendedBid = topBotAmount ? topBotAmount + 1000 : 1000;
+  const defaultRecommendedBid = topBotAmount ? Math.max(1000, topBotAmount + 1) : 1000;
   const [amount, setAmount] = useState<number>(defaultRecommendedBid);
   const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
@@ -26,7 +26,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   useEffect(() => {
     if (!hasManuallyEdited) {
       const topBid = currentBots[0]?.total_bid_amount;
-      setAmount(topBid ? topBid + 1000 : 1000);
+      setAmount(topBid ? Math.max(1000, topBid + 1) : 1000);
     }
   }, [currentBots, hasManuallyEdited]);
 

@@ -31,7 +31,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   onProceedPayment,
 }) => {
   const targetAmount = Number(targetBot?.total_bid_amount ?? targetBot?.current_sponsor_amount ?? 0);
-  const minRequired = targetAmount > 0 ? targetAmount + 1000 : 1000;
+  const minRequired = targetAmount > 0 ? Math.max(1000, targetAmount + 1) : 1000;
 
   const [amount, setAmount] = useState<number>(minRequired);
   const [username, setUsername] = useState('');
@@ -48,7 +48,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   useEffect(() => {
     if (targetBot) {
       const tAmt = Number(targetBot.total_bid_amount ?? targetBot.current_sponsor_amount ?? 0);
-      const req = tAmt > 0 ? tAmt + 1000 : 1000;
+      const req = tAmt > 0 ? Math.max(1000, tAmt + 1) : 1000;
       setAmount(req);
       setCategory(targetBot.category || 'DOWNLOADER');
       setError('');
