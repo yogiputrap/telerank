@@ -3,7 +3,7 @@ import { INITIAL_BOTS } from '../lib/mockData';
 import { getSupabaseAdmin, isSupabaseConfigured } from '../lib/supabase/server';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_BASE_URL || 'https://telerank.com';
+  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_BASE_URL || 'https://telerank.lol';
   const siteUrl = rawUrl.replace(/\/$/, '');
   const lastModified = new Date();
 
