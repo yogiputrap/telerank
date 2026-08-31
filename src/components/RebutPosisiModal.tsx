@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcCheckCircle, MgcLoading } from './MingCuteIcons';
+import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcCheckCircle, MgcLoading, MgcWarning } from './MingCuteIcons';
 import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
@@ -28,7 +28,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   targetRank,
   onProceedPayment,
 }) => {
-  const minRequired = targetBot ? targetBot.total_bid_amount + 1 : 10000;
+  const minRequired = targetBot ? targetBot.total_bid_amount + 1 : 1000;
   const [amount, setAmount] = useState<number>(minRequired);
   const [username, setUsername] = useState('');
   const [botName, setBotName] = useState('');
@@ -337,15 +337,16 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                     value={amount === 0 ? '' : amount.toLocaleString('id-ID')}
                     onChange={handleManualChange}
                     className="font-mono text-lg sm:text-2xl text-[#1c242b] font-black bg-transparent outline-none text-center w-full max-w-[180px]"
-                    placeholder="10.001"
+                    placeholder="1.001"
                   />
                 </div>
                 <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
                   {amount >= minRequired ? (
                     `(+Rp${(amount - targetBot.total_bid_amount).toLocaleString('id-ID')} lebih tinggi)`
                   ) : (
-                    <span className="text-rose-600 font-bold">
-                      ⚠️ Minimal Rp{minRequired.toLocaleString('id-ID')} (+Rp1 untuk merebut)
+                    <span className="text-rose-600 font-bold flex items-center justify-center gap-1">
+                      <MgcWarning size={12} className="shrink-0" />
+                      <span>Minimal Rp{minRequired.toLocaleString('id-ID')} (+Rp1 untuk merebut)</span>
                     </span>
                   )}
                 </span>

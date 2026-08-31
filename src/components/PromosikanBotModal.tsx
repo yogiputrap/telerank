@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcLoading, MgcCheckCircle } from './MingCuteIcons';
+import { MgcClose, MgcTelegram, MgcAdd, MgcSubtract, MgcArrowRight, MgcLoading, MgcCheckCircle, MgcWarning } from './MingCuteIcons';
 import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
@@ -113,7 +113,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   };
 
   const handleDecrease = (val: number) => {
-    setAmount((prev) => Math.max(10000, prev - val));
+    setAmount((prev) => Math.max(1000, prev - val));
   };
 
   const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +126,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
     const cleanBotName = botName.trim();
-    if (!cleanUsername || !cleanBotName || amount < 10000) return;
+    if (!cleanUsername || !cleanBotName || amount < 1000) return;
     const localError = usernameError(cleanUsername);
     if (localError) {
       setError(localError);
@@ -312,15 +312,15 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               <label className="block text-xs font-bold text-[#1c242b]">
                 Nominal Sponsor / Bid
               </label>
-              <span className="text-[11px] text-[#707579]">Ketik manual bebas (Min Rp10.000)</span>
+              <span className="text-[11px] text-[#707579]">Ketik manual bebas (Min Rp1.000)</span>
             </div>
 
             <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white transition-all">
               <button
                 type="button"
-                onClick={() => handleDecrease(10000)}
+                onClick={() => handleDecrease(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
-                title="-10k Rupiah"
+                title="-1k Rupiah"
               >
                 <MgcSubtract size={14} />
               </button>
@@ -336,15 +336,16 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                     value={amount === 0 ? '' : amount.toLocaleString('id-ID')}
                     onChange={handleManualChange}
                     className="font-mono text-lg sm:text-2xl text-[#1c242b] font-black bg-transparent outline-none text-center w-full max-w-[180px]"
-                    placeholder="50.000"
+                    placeholder="1.000"
                   />
                 </div>
                 <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
-                  {amount >= 10000 ? (
+                  {amount >= 1000 ? (
                     `Mendapatkan Peringkat #${projectedRank}`
                   ) : (
-                    <span className="text-rose-600 font-bold">
-                      ⚠️ Minimal listing Rp10.000
+                    <span className="text-rose-600 font-bold flex items-center justify-center gap-1">
+                      <MgcWarning size={12} className="shrink-0" />
+                      <span>Minimal listing Rp1.000</span>
                     </span>
                   )}
                 </span>
@@ -352,9 +353,9 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
               <button
                 type="button"
-                onClick={() => handleAdd(10000)}
+                onClick={() => handleAdd(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
-                title="+10k Rupiah"
+                title="+1k Rupiah"
               >
                 <MgcAdd size={14} />
               </button>
@@ -383,7 +384,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
             {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
             <button
               type="submit"
-              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 10000}
+              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>

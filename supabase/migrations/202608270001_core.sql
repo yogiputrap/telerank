@@ -47,7 +47,7 @@ create table public.payment_orders (
   bot_id uuid references public.bots(id) on delete set null,
   purpose public.order_purpose not null,
   telegram_username citext not null,
-  amount bigint not null check (amount >= 10000),
+  amount bigint not null check (amount >= 1000),
   target_amount bigint,
   draft_data jsonb,
   provider text not null default 'sandbox',
@@ -64,8 +64,8 @@ create table public.sponsor_events (
   bot_id uuid not null references public.bots(id) on delete restrict,
   order_id uuid not null unique references public.payment_orders(id) on delete restrict,
   previous_total bigint not null check (previous_total >= 0),
-  new_total bigint not null check (new_total >= 10000),
-  paid_amount bigint not null check (paid_amount >= 10000),
+  new_total bigint not null check (new_total >= 1000),
+  paid_amount bigint not null check (paid_amount >= 1000),
   event_kind public.order_purpose not null,
   created_at timestamptz not null default now()
 );

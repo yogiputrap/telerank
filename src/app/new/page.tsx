@@ -91,7 +91,7 @@ export default function NewListingPage() {
   })();
 
   const handleDecrease = (val: number) => {
-    setAmount((prev) => Math.max(10000, prev - val));
+    setAmount((prev) => Math.max(1000, prev - val));
   };
 
   const handleIncrease = (val: number) => {
@@ -102,7 +102,7 @@ export default function NewListingPage() {
     e.preventDefault();
     const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
     const cleanBotName = botName.trim();
-    if (!cleanUsername || !cleanBotName || amount < 10000) return;
+    if (!cleanUsername || !cleanBotName || amount < 1000) return;
     const localError = usernameError(cleanUsername);
     if (localError) {
       setError(localError);
@@ -315,13 +315,13 @@ export default function NewListingPage() {
               <label className="block text-xs font-bold text-[#1c242b]">
                 Nominal Sponsor Awal
               </label>
-              <span className="text-[11px] text-[#707579]">Minimal Rp10.000</span>
+              <span className="text-[11px] text-[#707579]">Minimal Rp1.000</span>
             </div>
 
             <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white">
               <button
                 type="button"
-                onClick={() => handleDecrease(10000)}
+                onClick={() => handleDecrease(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
               >
                 <MgcSubtract size={14} />
@@ -338,7 +338,7 @@ export default function NewListingPage() {
 
               <button
                 type="button"
-                onClick={() => handleIncrease(10000)}
+                onClick={() => handleIncrease(1000)}
                 className="w-8 h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center font-bold shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0"
               >
                 <MgcAdd size={14} />
@@ -347,7 +347,7 @@ export default function NewListingPage() {
 
             {/* Quick Chips */}
             <div className="grid grid-cols-4 gap-2 pt-1">
-              {[25000, 50000, 100000, 250000].map((val) => (
+              {[5000, 10000, 25000, 50000].map((val) => (
                 <button
                   type="button"
                   key={val}
@@ -368,7 +368,7 @@ export default function NewListingPage() {
           {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
           <button
             type="submit"
-            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 10000}
+            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000}
             className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4 disabled:opacity-50"
           >
             <span>Lanjut Bayar QRIS Instan</span>

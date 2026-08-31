@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { MgcTelegram, MgcShield, MgcFlash, MgcArrowRight, MgcCheckCircle } from '../../components/MingCuteIcons';
+import { MgcTelegram, MgcShield, MgcFlash, MgcArrowRight, MgcCheckCircle, MgcIndoFlag } from '../../components/MingCuteIcons';
 
 export default function TentangPage() {
   return (
@@ -17,8 +17,9 @@ export default function TentangPage() {
           <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Tentang TeleRank
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
-            Etalase & Leaderboard Bot Telegram Terbesar di Indonesia 🇮🇩
+          <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight flex items-center flex-wrap gap-2">
+            <span>Etalase & Leaderboard Bot Telegram Terbesar di Indonesia</span>
+            <MgcIndoFlag size={26} className="inline-block" />
           </h1>
           <p className="text-xs sm:text-sm text-[#707579] leading-relaxed">
             TeleRank diciptakan untuk memecahkan masalah penemuan (*discoverability*) ribuan bot Telegram karya developer Indonesia. Kami memberikan panggung terbuka, transparan, dan adil bagi setiap kreator untuk memamerkan inovasi mereka.

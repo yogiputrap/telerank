@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const fieldErrors: string[] = [];
     if (!username || !/^[a-zA-Z0-9_]{5,32}$/.test(username)) fieldErrors.push('telegramUsername');
     if (!botName || botName.length > 120) fieldErrors.push('botName');
-    if (!Number.isSafeInteger(amount) || amount < 10000 || amount > 9_000_000_000_000) fieldErrors.push('amount');
+    if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 9_000_000_000_000) fieldErrors.push('amount');
     if (description.length > 150) fieldErrors.push('description');
     if (!allowedCategories.includes(category)) fieldErrors.push('category');
     if (fieldErrors.length) {

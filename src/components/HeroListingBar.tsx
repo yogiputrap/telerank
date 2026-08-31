@@ -112,7 +112,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
                 inputMode="numeric"
                 value={amount === 0 ? '' : amount.toLocaleString('id-ID')}
                 onChange={handleManualAmountChange}
-                placeholder="10.000"
+                placeholder="1.000"
                 className="font-mono text-base sm:text-2xl md:text-3xl text-[#1c242b] font-black bg-transparent outline-none w-24 sm:w-36 md:w-44 text-left"
                 title="Ketik nominal manual bebas di sini"
               />
@@ -130,7 +130,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
         </div>
 
         <p className="text-xs sm:text-sm text-[#707579] pt-0.5">
-          Listing bot mulai <strong className="text-[#1c242b]">Rp10.000</strong>. Nominal menentukan posisi peringkat secara otomatis.
+          Listing bot mulai <strong className="text-[#1c242b]">Rp1.000</strong>. Nominal menentukan posisi peringkat secara otomatis.
         </p>
       </div>
 

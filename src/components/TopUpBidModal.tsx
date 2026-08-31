@@ -12,7 +12,7 @@ interface TopUpBidModalProps {
   onProceedToPayment: (bot: Bot, addAmount: number) => void;
 }
 
-const TOPUP_OPTIONS = [10000, 25000, 50000, 100000, 250000];
+const TOPUP_OPTIONS = [1000, 5000, 10000, 25000, 50000, 100000];
 
 export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
   isOpen,
@@ -21,7 +21,7 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
   currentBots,
   onProceedToPayment,
 }) => {
-  const [addAmount, setAddAmount] = useState<number>(25000);
+  const [addAmount, setAddAmount] = useState<number>(10000);
 
   if (!isOpen || !bot) return null;
 

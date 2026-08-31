@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
-import { MgcArrowRight, MgcCheckCircle } from '../../components/MingCuteIcons';
+import { MgcArrowRight, MgcCheckCircle, MgcClose } from '../../components/MingCuteIcons';
 
 export default function AturanPage() {
   return (
@@ -31,7 +31,7 @@ export default function AturanPage() {
               1
             </div>
             <div className="space-y-1">
-              <h3 className="font-bold text-sm text-[#1c242b]">Pendaftaran Bot Mulai Rp10.000</h3>
+              <h3 className="font-bold text-sm text-[#1c242b]">Pendaftaran Bot Mulai Rp1.000</h3>
               <p className="text-xs text-[#707579] leading-relaxed">
                 Masukkan username bot Telegram kamu (`@NamaBot`). Tentukan kategori yang sesuai dan masukkan nominal sponsor awal. Bot kamu akan langsung aktif di leaderboard setelah pembayaran QRIS terkonfirmasi otomatis.
               </p>
@@ -80,13 +80,16 @@ export default function AturanPage() {
           <h2 className="text-base font-bold text-[#1c242b]">Bot yang Dilarang di TeleRank</h2>
           <ul className="space-y-2 text-xs text-[#707579]">
             <li className="flex items-center gap-2">
-              <span className="text-rose-500 font-bold">✕</span> Bot phishing, pencuri akun Telegram, atau scam investasi bodong.
+              <MgcClose size={14} className="text-rose-500 shrink-0" />
+              <span>Bot phishing, pencuri akun Telegram, atau scam investasi bodong.</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-rose-500 font-bold">✕</span> Bot bermuatan judi online ilegal atau promosi situs terlarang.
+              <MgcClose size={14} className="text-rose-500 shrink-0" />
+              <span>Bot bermuatan judi online ilegal atau promosi situs terlarang.</span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="text-rose-500 font-bold">✕</span> Bot penyebar malware, trojan, atau link eksploitasi berbahaya.
+              <MgcClose size={14} className="text-rose-500 shrink-0" />
+              <span>Bot penyebar malware, trojan, atau link eksploitasi berbahaya.</span>
             </li>
           </ul>
         </div>

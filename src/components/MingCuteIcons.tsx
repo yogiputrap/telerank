@@ -144,3 +144,78 @@ export const MgcLoading: React.FC<IconProps> = ({ size = 20, className = '', ...
   </svg>
 );
 
+export const MgcTrophy: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M19 4h-2V3a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v1H5a3 3 0 0 0-3 3v2a4 4 0 0 0 4 4h.255A6 6 0 0 0 11 16.92V19H8v2h8v-2h-3v-2.08a6 6 0 0 0 4.745-3.92H18a4 4 0 0 0 4-4V7a3 3 0 0 0-3-3zM4 9V7a1 1 0 0 1 1-1h2v4.83A4.015 4.015 0 0 1 4 9zm16 0a4.015 4.015 0 0 1-3 1.83V6h2a1 1 0 0 1 1 1v2z" />
+  </svg>
+);
+
+export const MgcBot: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M13 2v2.055A8.002 8.002 0 0 1 20 12v6a2 2 0 0 1-2 2h-1v2h-2v-2H9v2H7v-2H6a2 2 0 0 1-2-2v-6a8.002 8.002 0 0 1 7-7.945V2h2zM6 12v6h12v-6a6 6 0 0 0-12 0zm3 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm6 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+  </svg>
+);
+
+export const MgcCalendar: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2zm11 8H6v8h12v-8zm0-2V6H6v2h12z" />
+  </svg>
+);
+
+export const MgcLightbulb: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7zm-2 18h4v2h-4v-2zm2-16a5 5 0 0 0-5 5c0 1.84.99 3.44 2.45 4.31l.55.33V16h4v-2.36l.55-.33A4.992 4.992 0 0 0 17 9a5 5 0 0 0-5-5z" />
+  </svg>
+);
+
+export const MgcBug: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M19 8h-2.17A5.98 5.98 0 0 0 14 4.83V3a1 1 0 0 0-2 0v1.83A5.98 5.98 0 0 0 9.17 8H7a1 1 0 0 0 0 2h1.83C8.3 11.23 8 12.58 8 14v1H6a1 1 0 0 0 0 2h2v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-1h2a1 1 0 0 0 0-2h-2v-1c0-1.42-.3-2.77-.83-4H21a1 1 0 0 0 0-2zm-3 8a4 4 0 0 1-8 0v-4a4 4 0 0 1 8 0v4z" />
+  </svg>
+);
+
+export const MgcGamepad: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M17 4a5 5 0 0 1 4.995 4.783L22 9v6a5 5 0 0 1-4.783 4.995L17 20h-1l-2-3H10l-2 3H7a5 5 0 0 1-4.995-4.783L2 15V9a5 5 0 0 1 4.783-4.995L7 4h10zm-9 6H7v2H5v2h2v2h2v-2h2v-2H9v-2zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" />
+  </svg>
+);
+
+export const MgcTools: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="m18.536 2.05 3.414 3.415a1 1 0 0 1 0 1.414l-2.829 2.829-4.828-4.829 2.829-2.828a1 1 0 0 1 1.414 0zm-5.657 4.243 4.828 4.829-8.485 8.485a2 2 0 0 1-.95.534l-4.743 1.054a.5.5 0 0 1-.595-.595l1.054-4.743a2 2 0 0 1 .534-.95l8.357-8.614z" />
+  </svg>
+);
+
+export const MgcStore: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M19 6V4a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1v2H2v3a4 4 0 0 0 3 3.874V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7.126A4 4 0 0 0 22 9V6h-3zM7 5h10v1H7V5zm10 14H7v-6.09a3.987 3.987 0 0 0 3-.91 3.99 3.99 0 0 0 4 0 3.987 3.987 0 0 0 3 .91V19zM4 8h16v1a2 2 0 1 1-4 0v-.5h-2v.5a2 2 0 1 1-4 0v-.5H8v.5a2 2 0 1 1-4 0V8z" />
+  </svg>
+);
+
+export const MgcWarning: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M12 2 1 21h22L12 2zm0 3.99 8.53 14.01H3.47L12 5.99zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z" />
+  </svg>
+);
+
+export const MgcSparkles: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M12 2l2.09 5.26L19.35 9.35l-5.26 2.09L12 16.7l-2.09-5.26L4.65 9.35l5.26-2.09L12 2zm6.5 13.5l1.045 2.63 2.63 1.045-2.63 1.045-1.045 2.63-1.045-2.63-2.63-1.045 2.63-1.045 1.045-2.63zM5.5 13.5l1.045 2.63 2.63 1.045-2.63 1.045-1.045 2.63-1.045-2.63-2.63-1.045 2.63-1.045 1.045-2.63z" />
+  </svg>
+);
+
+export const MgcCard: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} {...props}>
+    <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM4 6h16v2H4V6zm0 12v-6h16v6H4zm2-3h4v2H6v-2z" />
+  </svg>
+);
+
+export const MgcIndoFlag: React.FC<IconProps> = ({ size = 20, className = '', ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={`inline-block shrink-0 ${className}`} {...props}>
+    <rect x="2" y="5" width="20" height="7" rx="1" fill="#E11D48" />
+    <rect x="2" y="12" width="20" height="7" rx="1" fill="#FFFFFF" />
+    <rect x="2" y="5" width="20" height="14" rx="2" stroke="#CBD5E1" strokeWidth="1" />
+  </svg>
+);
+
+

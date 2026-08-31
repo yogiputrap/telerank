@@ -10,6 +10,8 @@ import {
   MgcExternalLink,
   MgcArrowRight,
   MgcHeadphone,
+  MgcLightbulb,
+  MgcBug,
 } from './MingCuteIcons';
 
 const FAQS = [
@@ -169,21 +171,22 @@ export const FloatingFeedbackSupport: React.FC = () => {
                       </label>
                       <div className="grid grid-cols-3 gap-1.5">
                         {[
-                          { id: 'SARAN', label: '💡 Saran Fitur' },
-                          { id: 'BUG', label: '🐛 Lapor Bug' },
-                          { id: 'LAINNYA', label: '💬 Lainnya' },
+                          { id: 'SARAN', label: 'Saran Fitur', icon: <MgcLightbulb size={13} className="inline mr-1" /> },
+                          { id: 'BUG', label: 'Lapor Bug', icon: <MgcBug size={13} className="inline mr-1" /> },
+                          { id: 'LAINNYA', label: 'Lainnya', icon: <MgcMessage size={13} className="inline mr-1" /> },
                         ].map((item) => (
                           <button
                             type="button"
                             key={item.id}
                             onClick={() => setFeedbackType(item.id)}
-                            className={`py-2 px-2 rounded-xl text-center font-bold border transition-all cursor-pointer text-[11px] ${
+                            className={`py-2 px-2 rounded-xl text-center font-bold border transition-all cursor-pointer text-[11px] flex items-center justify-center gap-1 ${
                               feedbackType === item.id
                                 ? 'bg-[#eef5fc] border-[#3390ec] text-[#3390ec]'
                                 : 'bg-[#f4f7fa] border-[#e4ecf2] text-[#707579] hover:bg-white'
                             }`}
                           >
-                            {item.label}
+                            {item.icon}
+                            <span>{item.label}</span>
                           </button>
                         ))}
                       </div>

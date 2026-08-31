@@ -7,7 +7,7 @@ export function orderErrorMessage(err: unknown): string {
     case 'RATE_LIMITED':
       return 'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.';
     case 'VALIDATION_ERROR':
-      return 'Data tidak valid. Username bot harus 5–32 karakter (huruf, angka, garis bawah), nama judul wajib diisi, dan nominal minimal Rp10.000.';
+      return 'Data tidak valid. Username bot harus 5–32 karakter (huruf, angka, garis bawah), nama judul wajib diisi, dan nominal minimal Rp1.000.';
     case 'PAYMENT_PROVIDER_UNAVAILABLE':
       return 'Gateway pembayaran sedang tidak merespons. Coba lagi beberapa saat.';
     case 'BACKEND_UNAVAILABLE':

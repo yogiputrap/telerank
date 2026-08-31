@@ -14,6 +14,7 @@ import { Footer } from '../components/Footer';
 import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../lib/storage';
 import { orderErrorMessage } from '../lib/orderErrors';
 import { Bot, BotCategory, OutbidNotification, BOT_CATEGORIES } from '../types';
+import { MgcTrophy, MgcTime, MgcCalendar, MgcBot } from '../components/MingCuteIcons';
 
 const CATEGORIES: { id: BotCategory; label: string }[] = [
   { id: 'ALL', label: 'Semua' },
@@ -389,9 +390,10 @@ export default function Home() {
                 });
                 setPromoteModalOpen(true);
               }}
-              className="text-[#3390ec] hover:text-[#2481cc] font-bold flex items-center gap-0.5 cursor-pointer"
+              className="text-[#3390ec] hover:text-[#2481cc] font-bold flex items-center gap-1 cursor-pointer"
             >
-              <span>🏆 Klaim Posisi #1</span>
+              <MgcTrophy size={14} className="text-amber-500" />
+              <span>Klaim Posisi #1</span>
             </button>
           </div>
 
@@ -399,23 +401,25 @@ export default function Home() {
           <div className="flex items-center justify-center gap-1.5">
             <button
               onClick={() => setTimeFilter('ALL')}
-              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 timeFilter === 'ALL'
                   ? 'bg-[#3390ec] text-white shadow-xs'
                   : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
               }`}
             >
-              ⏳ Keseluruhan
+              <MgcTime size={13} />
+              <span>Keseluruhan</span>
             </button>
             <button
               onClick={() => setTimeFilter('TODAY')}
-              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                 timeFilter === 'TODAY'
                   ? 'bg-[#3390ec] text-white shadow-xs'
                   : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
               }`}
             >
-              📅 Hari ini
+              <MgcCalendar size={13} />
+              <span>Hari ini</span>
             </button>
           </div>
 
@@ -466,7 +470,7 @@ export default function Home() {
           {!isLoading && filteredBots.length === 0 && (
             <div className="text-center py-12 px-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-xs space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-[#eef5fc] text-[#3390ec] flex items-center justify-center mx-auto text-xl font-bold">
-                🤖
+                <MgcBot size={26} />
               </div>
               <h3 className="text-sm sm:text-base font-bold text-[#1c242b]">
                 {searchQuery || activeCategory !== 'ALL'

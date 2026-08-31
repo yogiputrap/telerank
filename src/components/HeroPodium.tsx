@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Crown, Send, ArrowUpRight, Plus, Sparkles, ShieldCheck, Flame, Zap } from 'lucide-react';
+import { MgcDownload, MgcBot, MgcMessage, MgcGamepad } from './MingCuteIcons';
 import { Bot } from '../types';
 
 interface HeroPodiumProps {
@@ -43,17 +44,21 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
 
           {/* Quick Category Badges */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
-            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
-              📥 Downloader
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+              <MgcDownload size={13} className="text-teal-600" />
+              <span>Downloader</span>
             </span>
-            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
-              🤖 AI Copilot
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+              <MgcBot size={13} className="text-sky-600" />
+              <span>AI Copilot</span>
             </span>
-            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
-              💬 Anon Chat
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+              <MgcMessage size={13} className="text-amber-600" />
+              <span>Anon Chat</span>
             </span>
-            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
-              🎮 Mini Apps
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
+              <MgcGamepad size={13} className="text-indigo-600" />
+              <span>Mini Apps</span>
             </span>
           </div>
 

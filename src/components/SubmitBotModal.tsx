@@ -11,7 +11,7 @@ interface SubmitBotModalProps {
   onProceedToPayment: (botData: Partial<Bot>, amount: number) => void;
 }
 
-const PRESET_AMOUNTS = [15000, 30000, 50000, 100000, 250000, 500000];
+const PRESET_AMOUNTS = [1000, 5000, 10000, 25000, 50000, 100000];
 
 export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   isOpen,
@@ -134,7 +134,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
                 disabled={isCheckingBot || !telegramUsername}
                 className="px-4 py-2.5 rounded-2xl bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold text-xs whitespace-nowrap active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
               >
-                {isCheckingBot ? 'Mengecek...' : botChecked ? '✓ Terverifikasi' : 'Cek Bot'}
+                {isCheckingBot ? 'Mengecek...' : botChecked ? 'Terverifikasi' : 'Cek Bot'}
               </button>
             </div>
           </div>
@@ -159,12 +159,12 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
                 onChange={(e) => setCategory(e.target.value as BotCategory)}
                 className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:bg-white focus:border-teal-500"
               >
-                <option value="DOWNLOADER">📥 Media Downloader</option>
-                <option value="AI">🤖 AI & Chatbot</option>
-                <option value="ANON_CHAT">💬 Anon Chat & Menfess</option>
-                <option value="GAME">🎮 Mini Game / TMA</option>
-                <option value="TOOLS">🛠️ Tools & Utilitas</option>
-                <option value="STORE">💳 TopUp / Store</option>
+                <option value="DOWNLOADER">Downloader</option>
+                <option value="AI">AI Copilot</option>
+                <option value="ANON_CHAT">Anon Chat</option>
+                <option value="GAME">Mini Apps</option>
+                <option value="TOOLS">Developer & Tools</option>
+                <option value="STORE">Store & Topup</option>
               </select>
             </div>
           </div>
@@ -184,7 +184,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
             <label className="block text-xs font-semibold text-slate-700">Tagline Singkat (Opsional)</label>
             <input
               type="text"
-              placeholder="Contoh: 🔥 Download TikTok 0.2 detik tanpa watermark!"
+              placeholder="Contoh: Download TikTok 0.2 detik tanpa watermark!"
               value={customTagline}
               onChange={(e) => setCustomTagline(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:bg-white focus:border-teal-500"
@@ -235,8 +235,8 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">Rp</span>
               <input
                 type="number"
-                min={10000}
-                step={5000}
+                min={1000}
+                step={1000}
                 placeholder="Nominal custom..."
                 value={customAmountStr}
                 onChange={(e) => {

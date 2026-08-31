@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { MgcAdd } from './MingCuteIcons';
+import { MgcAdd, MgcTrophy } from './MingCuteIcons';
 import { Bot, BOT_CATEGORIES } from '../types';
 import confetti from 'canvas-confetti';
 
@@ -200,7 +200,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 title="Klaim Posisi #1 Teratas"
               >
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 border-dashed border-[#3390ec] bg-white flex items-center justify-center text-[#3390ec] mb-1.5 shadow-md group-hover/p1:scale-105 transition-transform">
-                  <span className="text-xl">🏆</span>
+                  <MgcTrophy size={24} className="text-[#3390ec]" />
                 </div>
                 <span className="text-xs font-black text-[#3390ec] mb-1">
                   Klaim #1
