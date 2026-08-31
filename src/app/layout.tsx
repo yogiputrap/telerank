@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { FloatingFeedbackSupport } from '../components/FloatingFeedbackSupport';
+import { safeJsonLd } from '../lib/sanitize';
 
 const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL || process.env.APP_BASE_URL || 'https://telerank.lol';
 const siteUrl = rawUrl.replace(/\/$/, '');
@@ -132,7 +133,7 @@ export default function RootLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
         />
       </head>
       <body className="min-h-screen bg-[#f0f2f5] text-[#1c242b] antialiased selection:bg-[#3390ec] selection:text-white">

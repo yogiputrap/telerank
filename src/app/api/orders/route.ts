@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin, isSupabaseConfigured } from '../../../lib/supabase/server';
 import { getClientKey, isRateLimited, jsonTooLarge } from '../../../lib/rate-limit';
 import { createPaykitaOrder, isPaykitaConfigured } from '../../../lib/paykita';
+import { sanitizeText, isValidHttpsUrl } from '../../../lib/sanitize';
 
 export async function POST(request: Request) {
   if (jsonTooLarge(request)) return NextResponse.json({ error: 'PAYLOAD_TOO_LARGE' }, { status: 413 });
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const username = String(body.telegramUsername || '').replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').trim().toLowerCase();
-    const botName = String(body.botName || '').trim();
+    const botName = sanitizeText(String(body.botName || ''));
     const amount = Number(body.amount);
     let category = String(body.category || 'DOWNLOADER').toUpperCase().trim();
     if (['AI', 'AI_GENERATOR', 'AI_GATEWAY', 'AI_COPILOT', 'AI_TOOLS', 'AI_CHAT'].includes(category)) {
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
     } else if (['STORE', 'TOPUP', 'STORE_TOPUP'].includes(category)) {
       category = 'STORE_TOPUP';
     }
-    const description = String(body.description || '').trim();
+    const description = sanitizeText(String(body.description || ''));
     const allowedCategories = ['DOWNLOADER', 'AI_CHAT', 'GAMES_HIBURAN', 'DEV_API', 'STORE_TOPUP'];
     const fieldErrors: string[] = [];
     if (!username || !/^[a-zA-Z0-9_]{5,32}$/.test(username) || !/bot$/i.test(username)) fieldErrors.push('telegramUsername');
@@ -38,7 +39,8 @@ export async function POST(request: Request) {
     const { data: existing } = await supabase.from('bots').select('id,current_sponsor_amount').eq('telegram_username', username).maybeSingle();
     if (existing && amount <= existing.current_sponsor_amount) return NextResponse.json({ error: 'AMOUNT_MUST_INCREASE' }, { status: 409 });
 
-    const avatarUrl = String(body.avatarUrl || '').trim() || `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
+    const rawAvatar = String(body.avatarUrl || '').trim();
+    const avatarUrl = isValidHttpsUrl(rawAvatar) ? rawAvatar : `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
 
     const { data: order, error: insertError } = await supabase.from('payment_orders').insert({
       bot_id: existing?.id ?? null,

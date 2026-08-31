@@ -15,6 +15,7 @@ import {
   MgcLoading,
 } from '../../../components/MingCuteIcons';
 import { orderErrorMessage } from '../../../lib/orderErrors';
+import { safeJsonLd } from '../../../lib/sanitize';
 import { Bot, BotCategory, CATEGORY_LABELS } from '../../../types';
 
 function ClickTracker({ botId }: { botId: string }) {
@@ -268,7 +269,7 @@ export default function BotDetailPage() {
       <ClickTracker botId={bot.id} />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(botJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(botJsonLd) }}
       />
       <Header />
 

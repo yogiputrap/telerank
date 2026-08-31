@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getClientKey, isRateLimited } from '../../../../lib/rate-limit';
+import { sanitizeText } from '../../../../lib/sanitize';
 
 interface CachedBotInfo {
   username: string;
@@ -9,10 +11,23 @@ interface CachedBotInfo {
   timestamp: number;
 }
 
+const MAX_CACHE_SIZE = 500;
 const botCache = new Map<string, CachedBotInfo>();
-const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
+function setBoundedCache(key: string, data: CachedBotInfo) {
+  if (botCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = botCache.keys().next().value;
+    if (oldestKey) botCache.delete(oldestKey);
+  }
+  botCache.set(key, data);
+}
 
 export async function GET(request: Request) {
+  if (isRateLimited(`tgbot:${getClientKey(request)}`, 30, 60_000)) {
+    return NextResponse.json({ error: 'RATE_LIMITED' }, { status: 429 });
+  }
+
   const { searchParams } = new URL(request.url);
   const rawUsername = searchParams.get('username') || '';
   const cleanUsername = rawUsername
@@ -51,7 +66,7 @@ export async function GET(request: Request) {
         hasCustomAvatar: false,
         timestamp: Date.now(),
       };
-      botCache.set(cleanUsername, fallbackData);
+      setBoundedCache(cleanUsername, fallbackData);
       return NextResponse.json({ success: true, data: fallbackData });
     }
 
@@ -122,16 +137,19 @@ export async function GET(request: Request) {
     const hasCustomAvatar = !isDefaultLogo && avatarUrl.startsWith('http');
     const finalAvatar = hasCustomAvatar ? avatarUrl : fallbackAvatar;
 
+    const safeName = sanitizeText(botName) || cleanUsername;
+    const safeDesc = sanitizeText(description);
+
     const data: CachedBotInfo = {
       username: cleanUsername,
-      botName: botName || cleanUsername,
-      description,
+      botName: safeName,
+      description: safeDesc,
       avatarUrl: finalAvatar,
       hasCustomAvatar,
       timestamp: Date.now(),
     };
 
-    botCache.set(cleanUsername, data);
+    setBoundedCache(cleanUsername, data);
     return NextResponse.json({ success: true, data });
   } catch (err) {
     console.error('Failed to fetch telegram bot profile for', cleanUsername, err);
@@ -143,6 +161,7 @@ export async function GET(request: Request) {
       hasCustomAvatar: false,
       timestamp: Date.now(),
     };
+    setBoundedCache(cleanUsername, fallbackData);
     return NextResponse.json({ success: true, data: fallbackData });
   }
 }

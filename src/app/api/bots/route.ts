@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin, isSupabaseConfigured } from '../../../lib/supabase/server';
 import { INITIAL_BOTS } from '../../../lib/mockData';
+import { sanitizeSearchQuery } from '../../../lib/sanitize';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
-  const search = searchParams.get('search')?.trim() || '';
-  if (search.length > 80 || /[(),]/.test(search)) return NextResponse.json({ error: 'VALIDATION_ERROR' }, { status: 400 });
+  const rawSearch = searchParams.get('search') || '';
+  const search = sanitizeSearchQuery(rawSearch);
   const limit = Math.min(Math.max(Number(searchParams.get('limit') || 20), 1), 100);
   const offset = Math.max(Number(searchParams.get('offset') || 0), 0);
 
@@ -45,7 +46,10 @@ export async function GET(request: Request) {
 
   try {
     const supabase = getSupabaseAdmin();
-    let query = supabase.from('public_leaderboard').select('*', { count: 'exact' }).range(offset, offset + limit - 1);
+    let query = supabase
+      .from('public_leaderboard')
+      .select('rank,id,telegram_username,bot_name,avatar_url,description,category,custom_tagline,contact_handle,total_bid_amount,is_verified,is_online,created_at,daily_clicks', { count: 'exact' })
+      .range(offset, offset + limit - 1);
     if (category && category !== 'ALL') query = query.eq('category', category);
     if (search) query = query.or(`bot_name.ilike.%${search}%,telegram_username.ilike.%${search}%,description.ilike.%${search}%`);
     const { data, error, count } = await query;
