@@ -17,7 +17,8 @@ const nextConfig = {
       style-src 'self' 'unsafe-inline';
       img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://*.telegram.org https://t.me https:;
       font-src 'self' data:;
-      connect-src 'self' https://cloud.umami.is https://*.supabase.co https://*.paykita.id https:;
+      connect-src 'self' https://cloud.umami.is https://api-gateway.umami.dev https://*.supabase.co https://*.paykita.id https:;
+      frame-src 'self' https://cloud.umami.is;
       frame-ancestors 'none';
       base-uri 'self';
       form-action 'self';
