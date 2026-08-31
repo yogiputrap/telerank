@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 import {
   MgcExternalLink,
@@ -13,14 +14,12 @@ interface BotCardProps {
   rank: number;
   bot: Bot;
   onRebut: (bot: Bot, requiredAmount: number) => void;
-  onDetail: (bot: Bot) => void;
 }
 
 export const BotCard: React.FC<BotCardProps> = ({
   rank,
   bot,
   onRebut,
-  onDetail,
 }) => {
   const nextMinBid = bot.total_bid_amount + 1;
   const categoryDisplayName = CATEGORY_LABELS[bot.category] || bot.category;
@@ -156,13 +155,12 @@ export const BotCard: React.FC<BotCardProps> = ({
           </span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => onDetail(bot)}
+        <Link
+          href={`/bot/${encodeURIComponent(bot.telegram_username.toLowerCase())}`}
           className="py-2.5 px-4 rounded-xl bg-[#f4f7fa] hover:bg-[#e8edf2] border border-[#e4ecf2] text-[#3390ec] font-bold text-xs transition-colors cursor-pointer shrink-0"
         >
           Detail
-        </button>
+        </Link>
       </div>
     </div>
   );

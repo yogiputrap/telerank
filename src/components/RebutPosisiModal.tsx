@@ -10,6 +10,7 @@ interface RebutPosisiModalProps {
   onClose: () => void;
   targetBot: Bot | null;
   targetRank: number;
+  currentBots: Bot[];
   onProceedPayment: (data: {
     challengerUsername: string;
     challengerBotName: string;
@@ -26,6 +27,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   onClose,
   targetBot,
   targetRank,
+  currentBots,
   onProceedPayment,
 }) => {
   const minRequired = targetBot ? targetBot.total_bid_amount + 1 : 1000;
@@ -93,6 +95,22 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
     };
   }, [username]);
 
+  // Dynamic projected rank from nominal vs all bots (excluding self if already exists)
+  const cleanUsername = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim().toLowerCase();
+  const existingEntry = cleanUsername
+    ? currentBots.find((b) => b.telegram_username.toLowerCase() === cleanUsername)
+    : undefined;
+  const opponents = existingEntry
+    ? currentBots.filter((b) => b.id !== existingEntry.id)
+    : currentBots;
+  let projectedRank = opponents.length + 1;
+  for (let i = 0; i < opponents.length; i++) {
+    if (amount > opponents[i].total_bid_amount) {
+      projectedRank = i + 1;
+      break;
+    }
+  }
+
   if (!isOpen || !targetBot) return null;
 
   const handleAdd = (val: number) => {
@@ -149,7 +167,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-black text-[#1c242b]">
-                Rebut Posisi #{targetRank}
+                Rebut Posisi #{projectedRank}
               </h3>
               <p className="text-[11px] text-[#707579]">
                 Isi identitas bot kamu & nominal untuk menggeser posisi ini
@@ -174,8 +192,8 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-1 mb-0.5">
               <span className="text-[10px] font-bold text-[#707579] uppercase">Posisi yang direbut:</span>
-              <span className="text-[11px] font-mono font-bold text-[#3390ec] bg-[#eef5fc] px-1.5 py-0.5 rounded">
-                #{targetRank}
+              <span className="text-[11px] font-mono font-bold text-[#3390ec] bg-[#eef5fc] px-1.5 py-0.5 rounded" title="Posisi berubah mengikuti nominal sponsor">
+                #{projectedRank}
               </span>
             </div>
             <h4 className="font-bold text-xs text-[#1c242b] truncate">
@@ -350,14 +368,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                   />
                 </div>
                 <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
-                  {amount >= minRequired ? (
-                    `(+Rp${(amount - targetBot.total_bid_amount).toLocaleString('id-ID')} lebih tinggi)`
-                  ) : (
-                    <span className="text-rose-600 font-bold flex items-center justify-center gap-1">
-                      <MgcWarning size={12} className="shrink-0" />
-                      <span>Minimal Rp{minRequired.toLocaleString('id-ID')} (+Rp1 untuk merebut)</span>
-                    </span>
-                  )}
+                  Mendapatkan Peringkat #{projectedRank}
                 </span>
               </div>
 

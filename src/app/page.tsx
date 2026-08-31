@@ -8,7 +8,6 @@ import { BotCard } from '../components/BotCard';
 import { RecentActivitySection } from '../components/RecentActivitySection';
 import { RebutPosisiModal } from '../components/RebutPosisiModal';
 import { PromosikanBotModal } from '../components/PromosikanBotModal';
-import { BotDetailModal } from '../components/BotDetailModal';
 import { PayKitaQRISModal } from '../components/PayKitaQRISModal';
 import { Footer } from '../components/Footer';
 import { getStoredBots, saveStoredBots, getStoredNotifications, saveStoredNotifications } from '../lib/storage';
@@ -96,12 +95,6 @@ export default function Home() {
     }
   };
 
-  // Save to storage whenever bots or notifications change
-  const updateBots = (newBots: Bot[]) => {
-    setBots(newBots);
-    saveStoredBots(newBots);
-  };
-
   // Modals
   const [rebutModalOpen, setRebutModalOpen] = useState(false);
   const [selectedBotForRebut, setSelectedBotForRebut] = useState<Bot | null>(null);
@@ -117,10 +110,6 @@ export default function Home() {
     category: 'DOWNLOADER',
     amount: 50000,
   });
-
-  const [detailModalOpen, setDetailModalOpen] = useState(false);
-  const [selectedBotForDetail, setSelectedBotForDetail] = useState<Bot | null>(null);
-  const [detailRank, setDetailRank] = useState<number>(1);
 
   const [isQRISModalOpen, setIsQRISModalOpen] = useState(false);
   const [pendingOrder, setPendingOrder] = useState<{
@@ -186,34 +175,12 @@ export default function Home() {
   const rank4to10Bots = filteredBots.slice(3, 10);
   const restBots = filteredBots.slice(10);
 
-  // Increment clicks when user interacts with a bot
-  const handleIncrementClick = (botId: string) => {
-    setBots((prev) =>
-      prev.map((b) =>
-        b.id === botId ? { ...b, daily_clicks: (b.daily_clicks || 0) + 1 } : b
-      )
-    );
-    void fetch('/api/bots/click', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ botId, kind: 'detail' }),
-    });
-  };
-
   // Handlers
   const handleOpenRebut = (bot: Bot) => {
     const rank = sortedBots.findIndex((b) => b.id === bot.id) + 1;
     setSelectedBotForRebut(bot);
     setRebutTargetRank(rank);
     setRebutModalOpen(true);
-  };
-
-  const handleOpenDetail = (bot: Bot) => {
-    const rank = sortedBots.findIndex((b) => b.id === bot.id) + 1;
-    handleIncrementClick(bot.id);
-    setSelectedBotForDetail(bot);
-    setDetailRank(rank);
-    setDetailModalOpen(true);
   };
 
   // When user clicks "Promosikan" on the fast submit bar, open PromosikanBotModal
@@ -521,7 +488,6 @@ export default function Home() {
               rank={index + 1}
               bot={bot}
               onRebut={handleOpenRebut}
-              onDetail={handleOpenDetail}
             />
           ))}
 
@@ -537,7 +503,6 @@ export default function Home() {
               rank={index + 4}
               bot={bot}
               onRebut={handleOpenRebut}
-              onDetail={handleOpenDetail}
             />
           ))}
 
@@ -557,7 +522,6 @@ export default function Home() {
               rank={index + 11}
               bot={bot}
               onRebut={handleOpenRebut}
-              onDetail={handleOpenDetail}
             />
           ))}
         </div>
@@ -597,16 +561,8 @@ export default function Home() {
         onClose={() => setRebutModalOpen(false)}
         targetBot={selectedBotForRebut}
         targetRank={rebutTargetRank}
+        currentBots={sortedBots}
         onProceedPayment={handleProceedRebutPayment}
-      />
-
-      {/* Modal 3: Detail Statistik Bot */}
-      <BotDetailModal
-        isOpen={detailModalOpen}
-        onClose={() => setDetailModalOpen(false)}
-        bot={selectedBotForDetail}
-        rank={detailRank}
-        onRebut={handleOpenRebut}
       />
 
       {/* Modal 4: Pembayaran QRIS Instan */}

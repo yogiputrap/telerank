@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { FloatingFeedbackSupport } from '../components/FloatingFeedbackSupport';
 
 export const metadata: Metadata = {
@@ -16,10 +17,11 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <script
+        <Script
           defer
           src="https://cloud.umami.is/script.js"
           data-website-id="8a719dbd-baf0-420b-aa86-567281849fd3"
+          strategy="afterInteractive"
         />
       </head>
       <body className="min-h-screen bg-[#f0f2f5] text-[#1c242b] antialiased selection:bg-[#3390ec] selection:text-white">
