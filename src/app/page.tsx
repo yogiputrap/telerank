@@ -29,6 +29,10 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<BotCategory>('ALL');
   const [timeFilter, setTimeFilter] = useState<'ALL' | 'TODAY'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+  const [liveStats, setLiveStats] = useState<{ onlineCount: number; visitorCount: number }>({
+    onlineCount: 1,
+    visitorCount: 1,
+  });
 
   // Load backend data upon mount
   useEffect(() => {
@@ -72,8 +76,27 @@ export default function Home() {
         if (!cancelled) setNotifications(getStoredNotifications());
       });
 
+    const fetchStats = () => {
+      fetch('/api/stats')
+        .then(async (res) => {
+          if (!res.ok) return;
+          const json = await res.json();
+          if (!cancelled && json.data) {
+            setLiveStats({
+              onlineCount: Math.max(1, Number(json.data.onlineCount) || 1),
+              visitorCount: Math.max(1, Number(json.data.visitorCount) || 1),
+            });
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchStats();
+    const statsTimer = setInterval(fetchStats, 20_000);
+
     return () => {
       cancelled = true;
+      clearInterval(statsTimer);
     };
   }, []);
 
@@ -355,19 +378,21 @@ export default function Home() {
         <div className="text-center space-y-3 pt-1">
           {/* Live Status Indicators */}
           <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[#707579]">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-[#4cd964] animate-tg-pulse" />
-              <span>12 online</span>
+            <span className="flex items-center gap-1.5 bg-[#eef5fc] px-2.5 py-0.5 rounded-full text-[#3390ec] font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#4cd964] animate-tg-pulse shrink-0" />
+              <span>{liveStats.onlineCount} online</span>
             </span>
             <span>•</span>
-            <span>4.820 pengunjung</span>
+            <span className="font-mono font-bold text-[#1c242b]">
+              {liveStats.visitorCount.toLocaleString('id-ID')} <span className="font-normal text-[#707579] font-sans">pengunjung</span>
+            </span>
             <span>•</span>
             <button
               onClick={() => {
                 setPromoteInitialData({
                   username: '',
                   category: 'DOWNLOADER',
-                  amount: sortedBots[0]?.total_bid_amount + 1 || 50000,
+                  amount: sortedBots[0]?.total_bid_amount ? sortedBots[0].total_bid_amount + 1 : 1000,
                 });
                 setPromoteModalOpen(true);
               }}
