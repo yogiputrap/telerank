@@ -1,6 +1,6 @@
 # Multi-stage optimized Dockerfile for Next.js (Dokploy / Coolify / Docker)
 # Stage 1: Base image
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Stage 2: Dependencies
 FROM base AS deps
