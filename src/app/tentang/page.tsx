@@ -1,10 +1,18 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { MgcTelegram, MgcShield, MgcFlash, MgcArrowRight, MgcCheckCircle, MgcIndoFlag } from '../../components/MingCuteIcons';
+
+export const metadata: Metadata = {
+  title: 'Tentang TeleRank - Showcase & Leaderboard Bot Telegram Indonesia',
+  description:
+    'TeleRank diciptakan untuk mempermudah penemuan ribuan bot Telegram karya developer Indonesia secara terbuka, transparan, dan adil.',
+  alternates: {
+    canonical: '/tentang',
+  },
+};
 
 export default function TentangPage() {
   return (

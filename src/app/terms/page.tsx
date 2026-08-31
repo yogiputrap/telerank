@@ -1,8 +1,16 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
+
+export const metadata: Metadata = {
+  title: 'Syarat & Ketentuan Layanan',
+  description:
+    'Syarat dan ketentuan penggunaan platform promosi dan leaderboard bot Telegram TeleRank.',
+  alternates: {
+    canonical: '/terms',
+  },
+};
 
 export default function TermsPage() {
   return (

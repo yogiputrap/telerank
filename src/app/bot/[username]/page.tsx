@@ -223,10 +223,52 @@ export default function BotDetailPage() {
   }
 
   const categoryName = CATEGORY_LABELS[bot.category] || bot.category;
+  const botSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://telerank.com';
+
+  const botJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Leaderboard',
+            item: botSiteUrl,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: `@${bot.telegram_username}`,
+            item: `${botSiteUrl}/bot/${encodeURIComponent(bot.telegram_username.toLowerCase())}`,
+          },
+        ],
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: bot.bot_name,
+        operatingSystem: 'Telegram',
+        applicationCategory: categoryName,
+        description: bot.description || `Bot Telegram ${bot.bot_name} (@${bot.telegram_username}) di TeleRank`,
+        url: `https://t.me/${bot.telegram_username}`,
+        image: bot.avatar_url,
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'IDR',
+        },
+      },
+    ],
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f2f5]">
       <ClickTracker botId={bot.id} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(botJsonLd) }}
+      />
       <Header />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-4">

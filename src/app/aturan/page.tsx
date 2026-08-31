@@ -1,10 +1,18 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import Link from 'next/link';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { MgcArrowRight, MgcCheckCircle, MgcClose } from '../../components/MingCuteIcons';
+
+export const metadata: Metadata = {
+  title: 'Panduan & Aturan Lelang Sponsor Bot Telegram',
+  description:
+    'Pelajari bagaimana algoritma peringkat TeleRank bekerja secara transparan, cara merebut posisi teratas (outbid), dan aturan kelayakan bot.',
+  alternates: {
+    canonical: '/aturan',
+  },
+};
 
 export default function AturanPage() {
   return (

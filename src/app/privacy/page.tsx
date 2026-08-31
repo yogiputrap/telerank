@@ -1,8 +1,16 @@
-'use client';
-
+import type { Metadata } from 'next';
 import React from 'react';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
+
+export const metadata: Metadata = {
+  title: 'Kebijakan Privasi',
+  description:
+    'Kebijakan privasi TeleRank terkait pengumpulan, penggunaan, dan perlindungan data pengguna.',
+  alternates: {
+    canonical: '/privacy',
+  },
+};
 
 export default function PrivacyPage() {
   return (
