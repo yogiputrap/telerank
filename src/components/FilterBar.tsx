@@ -67,7 +67,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
                   ? 'bg-slate-900 text-white shadow-xs'
                   : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'

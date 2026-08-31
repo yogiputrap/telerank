@@ -165,7 +165,7 @@ export default function NewListingPage() {
       <main className="flex-1 w-full max-w-2xl mx-auto px-4 py-8 space-y-6">
         {/* Header Title */}
         <div className="text-center space-y-2">
-          <span className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Form Pendaftaran
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
@@ -177,7 +177,7 @@ export default function NewListingPage() {
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit} className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-5">
+        <form onSubmit={handleSubmit} className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-5">
           {/* Projected Rank Banner */}
           <div className="flex items-center justify-between p-3 rounded-2xl bg-[#eef5fc] border border-[#d2e5f8]">
             <div className="space-y-0.5">

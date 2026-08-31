@@ -17,7 +17,7 @@ export const LeaderboardList: React.FC<LeaderboardListProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 my-2">
-      <div className="divide-y divide-slate-100 bg-white rounded-3xl border border-slate-200/80 px-5 sm:px-7 shadow-xs">
+      <div className="divide-y divide-slate-100 bg-white rounded-2xl border border-slate-200/80 px-5 sm:px-7 shadow-xs">
         {bots.map((bot, index) => {
           const rank = index + 4; // since Top 3 are shown above
           const rankStr = rank < 10 ? `0${rank}` : `${rank}`;

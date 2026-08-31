@@ -20,7 +20,7 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
   const rank3 = topBots[2];
 
   return (
-    <div className="relative w-full rounded-3xl sm:rounded-4xl bg-white border border-slate-200/80 p-6 sm:p-8 md:p-10 shadow-sm overflow-hidden my-6">
+    <div className="relative w-full rounded-2xl bg-white border border-slate-200/80 p-6 sm:p-8 md:p-10 shadow-sm overflow-hidden my-6">
       {/* Background Soft Pastel Glow */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-teal-100/60 via-amber-100/40 to-transparent rounded-full blur-3xl pointer-events-none" />
 
@@ -31,7 +31,7 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
               Peringkat Bot Telegram
             </h1>
-            <span className="px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-bold">
+            <span className="px-3 py-1 rounded-lg bg-teal-50 border border-teal-200 text-teal-700 text-xs font-bold">
               {topBots.length} Bot Terdaftar
             </span>
           </div>
@@ -43,16 +43,16 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
 
           {/* Quick Category Badges */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
               📥 Downloader
             </span>
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
               🤖 AI Copilot
             </span>
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
               💬 Anon Chat
             </span>
-            <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
+            <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors">
               🎮 Mini Apps
             </span>
           </div>
@@ -63,7 +63,7 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
               onClick={onOpenSubmitModal}
               className="inline-flex items-center gap-2 text-teal-600 hover:text-teal-700 font-bold text-xs sm:text-sm group cursor-pointer"
             >
-              <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <div className="w-6 h-6 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Plus className="w-3.5 h-3.5" />
               </div>
               <span className="underline underline-offset-4">Daftarkan & promosikan bot kamu ke daftar ini</span>
@@ -80,9 +80,9 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank2.avatar_url}
                   alt={rank2.bot_name}
-                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
                 />
-                <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-sky-500 text-white font-bold text-[10px] shadow">
+                <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-lg bg-sky-500 text-white font-bold text-[10px] shadow">
                   #2
                 </span>
               </div>
@@ -109,9 +109,9 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank1.avatar_url}
                   alt={rank1.bot_name}
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-amber-300 shadow-xl group-hover:scale-105 transition-transform"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-4 border-amber-300 shadow-xl group-hover:scale-105 transition-transform"
                 />
-                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.2 rounded-full bg-amber-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow">
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.2 rounded-lg bg-amber-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow">
                   Raja #1
                 </span>
               </div>
@@ -135,9 +135,9 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank3.avatar_url}
                   alt={rank3.bot_name}
-                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
                 />
-                <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-orange-500 text-white font-bold text-[10px] shadow">
+                <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-lg bg-orange-500 text-white font-bold text-[10px] shadow">
                   #3
                 </span>
               </div>

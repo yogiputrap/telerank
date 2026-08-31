@@ -10,8 +10,8 @@ export default function StatistikPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
-          <span className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
+          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Live Metrics
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
@@ -50,7 +50,7 @@ export default function StatistikPage() {
         </div>
 
         {/* Category Breakdown (100% Identical Category Names) */}
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-4">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-4">
           <h2 className="text-base font-bold text-[#1c242b]">Distribusi Kategori Bot Paling Populer</h2>
 
           <div className="space-y-3 text-xs">

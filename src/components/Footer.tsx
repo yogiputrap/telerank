@@ -9,7 +9,7 @@ export const Footer: React.FC = () => {
     <footer className="w-full max-w-3xl mx-auto py-12 px-4 text-center text-xs text-[#707579] space-y-4 mt-12 border-t border-[#e4ecf2]">
       {/* Brand & Mission */}
       <div className="flex items-center justify-center gap-2">
-        <div className="w-6 h-6 rounded-full bg-[#3390ec] text-white flex items-center justify-center shadow-xs">
+        <div className="w-6 h-6 rounded-lg bg-[#3390ec] text-white flex items-center justify-center shadow-xs">
           <MgcTelegram size={14} />
         </div>
         <span className="text-[#1c242b] font-black text-sm">

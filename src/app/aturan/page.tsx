@@ -12,8 +12,8 @@ export default function AturanPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
-          <span className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
+          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Panduan & Aturan Main
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
@@ -25,9 +25,9 @@ export default function AturanPage() {
         </div>
 
         {/* Steps Card */}
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
               1
             </div>
             <div className="space-y-1">
@@ -39,7 +39,7 @@ export default function AturanPage() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
               2
             </div>
             <div className="space-y-1">
@@ -51,7 +51,7 @@ export default function AturanPage() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
               3
             </div>
             <div className="space-y-1">
@@ -63,7 +63,7 @@ export default function AturanPage() {
           </div>
 
           <div className="flex items-start gap-4">
-            <div className="w-8 h-8 rounded-full bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-[#3390ec] text-white font-black text-sm flex items-center justify-center shrink-0">
               4
             </div>
             <div className="space-y-1">
@@ -76,7 +76,7 @@ export default function AturanPage() {
         </div>
 
         {/* Content Guidelines */}
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
           <h2 className="text-base font-bold text-[#1c242b]">Bot yang Dilarang di TeleRank</h2>
           <ul className="space-y-2 text-xs text-[#707579]">
             <li className="flex items-center gap-2">

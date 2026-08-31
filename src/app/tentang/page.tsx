@@ -13,8 +13,8 @@ export default function TentangPage() {
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-6">
         {/* Hero Card */}
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
-          <span className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
+          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Tentang TeleRank
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
@@ -59,7 +59,7 @@ export default function TentangPage() {
         </div>
 
         {/* Story & Vision */}
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-4 text-xs sm:text-sm text-[#707579] leading-relaxed">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-4 text-xs sm:text-sm text-[#707579] leading-relaxed">
           <h2 className="text-lg font-bold text-[#1c242b]">Mengapa TeleRank?</h2>
           <p>
             Di Telegram, terdapat jutaan utilitas hebat: mulai dari bot downloader video, asisten AI skripsi, bot anon chat untuk cari teman, hingga bot top up game otomatis. Namun, mencari bot yang benar-benar aktif dan aman seringkali sulit karena minimnya katalog terkurasi di Indonesia.
@@ -70,14 +70,14 @@ export default function TentangPage() {
         </div>
 
         {/* CTA Card */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-[#3390ec] to-[#2481cc] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+        <div className="p-6 rounded-2xl bg-gradient-to-r from-[#3390ec] to-[#2481cc] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
           <div className="space-y-1 text-center sm:text-left">
             <h3 className="text-base font-extrabold">Punya Bot Telegram Keren?</h3>
             <p className="text-xs text-blue-100">Daftarkan sekarang dan rebut posisi #1 di TeleRank!</p>
           </div>
           <Link
             href="/new"
-            className="px-5 py-2.5 rounded-full bg-white text-[#3390ec] font-bold text-xs hover:bg-blue-50 active:scale-95 transition-all shadow-xs shrink-0 flex items-center gap-1.5"
+            className="px-5 py-2.5 rounded-xl bg-white text-[#3390ec] font-bold text-xs hover:bg-blue-50 active:scale-95 transition-all shadow-xs shrink-0 flex items-center gap-1.5"
           >
             <span>Pasang Bot Kamu</span>
             <MgcArrowRight size={14} />

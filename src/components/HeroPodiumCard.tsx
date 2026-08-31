@@ -80,7 +80,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
       <div
         ref={cardRef}
         onMouseEnter={(e) => fireCelebration(e)}
-        className="relative rounded-3xl bg-white border border-[#e4ecf2] p-5 sm:p-7 md:p-8 shadow-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#3390ec]/30 group cursor-default"
+        className="relative rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 md:p-8 shadow-xs overflow-hidden transition-all duration-300 hover:shadow-md hover:border-[#3390ec]/30 group cursor-default"
       >
         {/* Telegram Soft Blue Ambient Gradient Glow */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-[#eef5fc] via-[#e4f0fa]/80 to-transparent rounded-full blur-2xl pointer-events-none transition-transform duration-700 group-hover:scale-110" />
@@ -103,7 +103,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
               {BOT_CATEGORIES.slice(0, 4).map((cat) => (
                 <span
                   key={cat.id}
-                  className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-semibold"
+                  className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-semibold"
                 >
                   {cat.label}
                 </span>
@@ -136,7 +136,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot2.avatar_url}
                     alt={bot2.bot_name}
-                    className="w-11 h-11 sm:w-13 sm:h-13 rounded-full object-cover border-2 border-white shadow-md group-hover/p2:ring-2 group-hover/p2:ring-[#a2d2ff]"
+                    className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p2:ring-2 group-hover/p2:ring-[#a2d2ff]"
                   />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#1c242b] truncate max-w-[70px] sm:max-w-[85px] text-center mb-1">
@@ -155,7 +155,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 onClick={onOpenSubmit}
                 title="Klaim Posisi #2"
               >
-                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-dashed border-[#a2d2ff] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p2:border-[#3390ec] group-hover/p2:text-[#3390ec]">
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl border-2 border-dashed border-[#a2d2ff] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p2:border-[#3390ec] group-hover/p2:text-[#3390ec]">
                   <MgcAdd size={16} />
                 </div>
                 <span className="text-[10px] font-bold text-[#707579] mb-1">
@@ -180,7 +180,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot1.avatar_url}
                     alt={bot1.bot_name}
-                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-3 border-[#3390ec] shadow-lg group-hover/p1:scale-105 transition-transform"
+                    className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-[#3390ec] shadow-lg group-hover/p1:scale-105 transition-transform"
                   />
                 </div>
                 <span className="text-xs font-black text-[#1c242b] truncate max-w-[85px] sm:max-w-[100px] text-center mb-1">
@@ -199,7 +199,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 onClick={onOpenSubmit}
                 title="Klaim Posisi #1 Teratas"
               >
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-[#3390ec] bg-white flex items-center justify-center text-[#3390ec] mb-1.5 shadow-md group-hover/p1:scale-105 transition-transform">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 border-dashed border-[#3390ec] bg-white flex items-center justify-center text-[#3390ec] mb-1.5 shadow-md group-hover/p1:scale-105 transition-transform">
                   <span className="text-xl">🏆</span>
                 </div>
                 <span className="text-xs font-black text-[#3390ec] mb-1">
@@ -224,7 +224,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                   <img
                     src={bot3.avatar_url}
                     alt={bot3.bot_name}
-                    className="w-11 h-11 sm:w-13 sm:h-13 rounded-full object-cover border-2 border-white shadow-md group-hover/p3:ring-2 group-hover/p3:ring-[#7bd8d2]"
+                    className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p3:ring-2 group-hover/p3:ring-[#7bd8d2]"
                   />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#1c242b] truncate max-w-[70px] sm:max-w-[85px] text-center mb-1">
@@ -243,7 +243,7 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                 onClick={onOpenSubmit}
                 title="Klaim Posisi #3"
               >
-                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-dashed border-[#7bd8d2] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p3:border-[#3390ec] group-hover/p3:text-[#3390ec]">
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl border-2 border-dashed border-[#7bd8d2] bg-white/70 flex items-center justify-center text-slate-400 mb-1.5 shadow-2xs group-hover/p3:border-[#3390ec] group-hover/p3:text-[#3390ec]">
                   <MgcAdd size={16} />
                 </div>
                 <span className="text-[10px] font-bold text-[#707579] mb-1">

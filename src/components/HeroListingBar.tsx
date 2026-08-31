@@ -96,7 +96,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             <button
               type="button"
               onClick={handleDecrease}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
               title="Kurangi nominal"
             >
               <MgcSubtract size={14} />
@@ -121,7 +121,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             <button
               type="button"
               onClick={handleIncrease}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white hover:bg-[#eef5fc] text-[#3390ec] flex items-center justify-center transition-colors shadow-2xs cursor-pointer active:scale-95 border border-[#d2e5f8] shrink-0 font-bold"
               title="Tambah nominal"
             >
               <MgcAdd size={14} />

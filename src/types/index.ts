@@ -22,6 +22,7 @@ export interface OutbidNotification {
   id: string;
   bot_name: string;
   telegram_username: string;
+  avatar_url?: string;
   old_rank: number;
   new_rank: number;
   amount_added: number;

@@ -399,7 +399,7 @@ export default function Home() {
           <div className="flex items-center justify-center gap-1.5">
             <button
               onClick={() => setTimeFilter('ALL')}
-              className={`px-3.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 timeFilter === 'ALL'
                   ? 'bg-[#3390ec] text-white shadow-xs'
                   : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
@@ -409,7 +409,7 @@ export default function Home() {
             </button>
             <button
               onClick={() => setTimeFilter('TODAY')}
-              className={`px-3.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 timeFilter === 'TODAY'
                   ? 'bg-[#3390ec] text-white shadow-xs'
                   : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
@@ -427,7 +427,7 @@ export default function Home() {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                     isActive
                       ? 'bg-[#3390ec] text-white shadow-xs'
                       : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
@@ -448,9 +448,9 @@ export default function Home() {
               {[1, 2, 3, 4].map((i) => (
                 <div
                   key={i}
-                  className="rounded-3xl bg-white border border-[#e4ecf2] p-4 sm:p-5 shadow-xs flex items-center gap-3 sm:gap-4 animate-pulse"
+                  className="rounded-2xl bg-white border border-[#e4ecf2] p-4 sm:p-5 shadow-xs flex items-center gap-3 sm:gap-4 animate-pulse"
                 >
-                  <div className="w-8 h-8 rounded-full bg-slate-200 shrink-0" />
+                  <div className="w-8 h-8 rounded-xl bg-slate-200 shrink-0" />
                   <div className="w-12 h-12 rounded-2xl bg-slate-200 shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 bg-slate-200 rounded w-1/3" />
@@ -464,7 +464,7 @@ export default function Home() {
 
           {/* Empty State */}
           {!isLoading && filteredBots.length === 0 && (
-            <div className="text-center py-12 px-4 rounded-3xl bg-white border border-[#e4ecf2] shadow-xs space-y-3">
+            <div className="text-center py-12 px-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-xs space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-[#eef5fc] text-[#3390ec] flex items-center justify-center mx-auto text-xl font-bold">
                 🤖
               </div>
@@ -508,7 +508,9 @@ export default function Home() {
           ))}
 
           {/* Aktivitas Terbaru Section */}
-          {notifications.length > 0 && <RecentActivitySection notifications={notifications} />}
+          {notifications.length > 0 && (
+            <RecentActivitySection notifications={notifications} bots={bots} />
+          )}
 
           {/* Cards #4 to #10 */}
           {rank4to10Bots.map((bot, index) => (
@@ -524,7 +526,7 @@ export default function Home() {
           {/* TOP 10 Divider Pill */}
           {restBots.length > 0 && (
             <div className="py-2 flex items-center justify-center">
-              <span className="px-3.5 py-1 rounded-full bg-white border border-[#e4ecf2] text-[#707579] font-mono font-bold text-[10px] tracking-wider uppercase shadow-2xs">
+              <span className="px-3.5 py-1 rounded-lg bg-white border border-[#e4ecf2] text-[#707579] font-mono font-bold text-[10px] tracking-wider uppercase shadow-2xs">
                 TOP 10
               </span>
             </div>

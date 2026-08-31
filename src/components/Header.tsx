@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
           damping: 38,
           mass: 0.7,
         }}
-        className={`pointer-events-auto relative overflow-hidden flex items-center justify-between rounded-full bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-md shadow-slate-900/5 transition-colors duration-300 ${
+        className={`pointer-events-auto relative overflow-hidden flex items-center justify-between rounded-2xl bg-white/35 hover:bg-white/45 backdrop-blur-xl border border-white/60 shadow-md shadow-slate-900/5 transition-colors duration-300 ${
           isScrolled
             ? 'h-11 px-3.5 sm:px-4 shadow-xl shadow-[#3390ec]/20 hover:scale-105 active:scale-95 cursor-pointer ring-1 ring-[#3390ec]/30 bg-white/45'
             : 'w-full max-w-3xl h-13 px-4 sm:px-6 ring-1 ring-white/40'
@@ -46,21 +46,21 @@ export const Header: React.FC = () => {
         }}
       >
         {/* Crystal Clear Liquid Glass Specular Reflections */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/60 via-white/10 to-transparent pointer-events-none opacity-80" />
-        <div className="absolute -inset-px rounded-full bg-gradient-to-r from-[#3390ec]/10 via-transparent to-[#3390ec]/10 pointer-events-none" />
+        <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/60 via-white/10 to-transparent pointer-events-none opacity-80" />
+        <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-[#3390ec]/10 via-transparent to-[#3390ec]/10 pointer-events-none" />
         <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-white/80 to-transparent pointer-events-none" />
 
         {/* Brand Group: Logo + TeleRank + Showcase Pill */}
         <motion.div layout className="relative flex items-center gap-2.5 z-10 shrink-0">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-full bg-[#3390ec] flex items-center justify-center text-white shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 rounded-xl bg-[#3390ec] flex items-center justify-center text-white shadow-xs shrink-0 group-hover:scale-105 transition-transform">
               <MgcTelegram size={17} />
             </div>
             <div className="flex items-center">
               <span className="text-base font-black tracking-tight text-[#1c242b] whitespace-nowrap">
                 Tele<span className="text-[#3390ec]">Rank</span>
               </span>
-              <span className="text-[10px] text-[#3390ec] font-bold ml-2 px-2 py-0.5 rounded-full bg-[#3390ec]/10 border border-[#3390ec]/20 whitespace-nowrap">
+              <span className="text-[10px] text-[#3390ec] font-bold ml-2 px-2 py-0.5 rounded-lg bg-[#3390ec]/10 border border-[#3390ec]/20 whitespace-nowrap">
                 Showcase
               </span>
             </div>
@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
 
               <Link
                 href="/new"
-                className="px-3 py-1.5 rounded-full bg-[#3390ec] hover:bg-[#2481cc] text-white font-bold text-xs flex items-center gap-1 shadow-xs active:scale-95 transition-all"
+                className="px-3.5 py-1.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] text-white font-bold text-xs flex items-center gap-1 shadow-xs active:scale-95 transition-all"
               >
                 <MgcAdd size={14} />
                 <span>Listing Bot</span>

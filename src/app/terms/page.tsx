@@ -10,8 +10,8 @@ export default function TermsPage() {
       <Header />
 
       <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
-          <span className="px-3 py-1 rounded-full bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
+          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
             Legal
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
@@ -22,7 +22,7 @@ export default function TermsPage() {
           </p>
         </div>
 
-        <div className="rounded-3xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-6 text-xs sm:text-sm text-[#707579] leading-relaxed">
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-6 text-xs sm:text-sm text-[#707579] leading-relaxed">
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">1. Penerimaan Ketentuan</h2>
             <p>

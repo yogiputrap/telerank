@@ -7,7 +7,7 @@ export const HowItWorks: React.FC = () => {
   return (
     <div className="w-full my-16 py-10" id="carakerja">
       <div className="text-center max-w-2xl mx-auto mb-10">
-        <span className="px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-700 text-xs font-bold uppercase tracking-wider">
+        <span className="px-3.5 py-1 rounded-lg bg-teal-50 border border-teal-200 text-teal-700 text-xs font-bold uppercase tracking-wider">
           Cara Kerja Sederhana
         </span>
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">
@@ -20,7 +20,7 @@ export const HowItWorks: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Step 1 */}
-        <div className="rounded-3xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
+        <div className="rounded-2xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 text-teal-700 flex items-center justify-center font-black text-lg shadow-xs">
             1
           </div>
@@ -34,7 +34,7 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         {/* Step 2 */}
-        <div className="rounded-3xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
+        <div className="rounded-2xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-black text-lg shadow-xs">
             2
           </div>
@@ -48,7 +48,7 @@ export const HowItWorks: React.FC = () => {
         </div>
 
         {/* Step 3 */}
-        <div className="rounded-3xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
+        <div className="rounded-2xl p-6 bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all space-y-3">
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center font-black text-lg shadow-xs">
             3
           </div>

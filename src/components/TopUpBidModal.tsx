@@ -35,7 +35,7 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white border border-slate-200 p-6 shadow-2xl space-y-4">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
           >
             <MgcClose size={18} />
           </button>
@@ -95,7 +95,7 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-full bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition-all cursor-pointer"
+            className="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-98 transition-all cursor-pointer"
           >
             <span>Bayar via QRIS Instan</span>
             <MgcArrowRight size={14} />

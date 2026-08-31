@@ -12,7 +12,7 @@ export const LiveTicker: React.FC<LiveTickerProps> = ({ notifications }) => {
   return (
     <div className="bg-gradient-to-r from-teal-50/80 via-sky-50/80 to-emerald-50/80 border-b border-teal-100 py-2 px-4 overflow-hidden">
       <div className="max-w-7xl mx-auto flex items-center gap-3 text-xs">
-        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500 text-white font-bold uppercase tracking-wider shrink-0 text-[10px] shadow-xs">
+        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-amber-500 text-white font-bold uppercase tracking-wider shrink-0 text-[10px] shadow-xs">
           <Flame className="w-3 h-3 fill-white" />
           <span>Live Salip</span>
         </div>

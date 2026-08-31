@@ -17,7 +17,7 @@ export const Top3HighlightBox: React.FC<Top3HighlightBoxProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 my-2">
-      <div className="rounded-3xl bg-[#fefcf3] border border-amber-200/80 p-5 sm:p-7 shadow-xs space-y-4">
+      <div className="rounded-2xl bg-[#fefcf3] border border-amber-200/80 p-5 sm:p-7 shadow-xs space-y-4">
         {/* Top 3 Rows */}
         <div className="divide-y divide-amber-100">
           {topBots.map((bot, index) => {

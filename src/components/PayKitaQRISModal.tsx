@@ -191,7 +191,7 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white border border-[#e4ecf2] p-6 shadow-2xl space-y-4">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white border border-[#e4ecf2] p-6 shadow-2xl space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#e4ecf2]">
           <div className="flex items-center gap-2">
@@ -223,7 +223,7 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer"
+            className="p-1.5 rounded-xl text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer"
             title="Tutup / Batalkan"
           >
             <MgcClose size={18} />
@@ -234,7 +234,7 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
         {isPaid ? (
           <div className="py-2 space-y-4 animate-in zoom-in-95 duration-300">
             <div className="text-center space-y-2">
-              <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-sm">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border-2 border-emerald-200 shadow-sm">
                 <MgcCheckCircle size={40} />
               </div>
               <h4 className="text-lg font-black text-[#1c242b]">Pembayaran Berhasil!</h4>
@@ -309,7 +309,7 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
         ) : isExpired ? (
           /* EXPIRED STATE */
           <div className="text-center py-6 space-y-4 animate-in zoom-in-95 duration-300">
-            <div className="w-14 h-14 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
+            <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <MgcTime size={32} />
             </div>
             <div className="space-y-1">

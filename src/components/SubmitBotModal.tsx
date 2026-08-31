@@ -87,7 +87,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white border border-slate-200 p-6 sm:p-8 shadow-2xl space-y-5 my-8">
+      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-2xl space-y-5 my-8">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
@@ -101,7 +101,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
+            className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -256,7 +256,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
             </div>
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-medium text-slate-500">Menempati:</span>
-              <span className="px-3 py-0.5 rounded-full bg-teal-600 text-white font-black font-mono text-sm shadow-xs">
+              <span className="px-3 py-0.5 rounded-lg bg-teal-600 text-white font-black font-mono text-sm shadow-xs">
                 #{predictedRank}
               </span>
             </div>
@@ -266,7 +266,7 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-3 rounded-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-600/25 active:scale-98 transition-all cursor-pointer"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-extrabold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-600/25 active:scale-98 transition-all cursor-pointer"
             >
               <span>Lanjut Bayar QRIS Instan</span>
               <ArrowRight className="w-4 h-4 text-teal-200" />

@@ -66,7 +66,7 @@ export const FloatingFeedbackSupport: React.FC = () => {
             setIsOpen(true);
             setIsSubmitted(false);
           }}
-          className="group relative flex items-center gap-2 px-3.5 sm:px-4 py-3 rounded-full bg-[#3390ec] hover:bg-[#2481cc] active:scale-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#3390ec]/30 border border-white/40 backdrop-blur-xl transition-all duration-300 cursor-pointer"
+          className="group relative flex items-center gap-2 px-3.5 sm:px-4 py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-95 text-white font-bold text-xs sm:text-sm shadow-xl shadow-[#3390ec]/30 border border-white/40 backdrop-blur-xl transition-all duration-300 cursor-pointer"
           title="Bantuan & Masukan"
         >
           {/* Pulse Indicator */}
@@ -84,7 +84,7 @@ export const FloatingFeedbackSupport: React.FC = () => {
       {/* 2. Interactive Dialog Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-3xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
+          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
             {/* Modal Top Header */}
             <div className="flex items-center justify-between pb-3 border-b border-[#e4ecf2]">
               <div className="flex items-center gap-2.5">
@@ -102,7 +102,7 @@ export const FloatingFeedbackSupport: React.FC = () => {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-full text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0"
+                className="p-1.5 rounded-xl text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0"
               >
                 <MgcClose size={18} />
               </button>
@@ -145,7 +145,7 @@ export const FloatingFeedbackSupport: React.FC = () => {
               <div className="space-y-3.5">
                 {isSubmitted ? (
                   <div className="text-center py-6 space-y-2 animate-in zoom-in-95 duration-300">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
                       <MgcCheckCircle size={30} />
                     </div>
                     <h4 className="text-sm font-bold text-[#1c242b]">Masukan Berhasil Terkirim!</h4>

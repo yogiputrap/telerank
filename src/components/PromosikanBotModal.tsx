@@ -152,7 +152,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-3xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#e4ecf2]">
           <div className="flex items-center gap-2.5">
@@ -170,7 +170,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0"
+            className="p-1.5 rounded-xl text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0"
           >
             <MgcClose size={18} />
           </button>

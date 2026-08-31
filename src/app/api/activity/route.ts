@@ -21,7 +21,7 @@ export async function GET() {
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase
       .from('rank_events')
-      .select('id,new_rank,old_rank,new_amount,created_at,bots(bot_name,telegram_username)')
+      .select('id,new_rank,old_rank,new_amount,created_at,bots(bot_name,telegram_username,avatar_url)')
       .order('created_at', { ascending: false })
       .limit(8);
     if (error) throw error;
@@ -29,6 +29,7 @@ export async function GET() {
       id: event.id,
       bot_name: event.bots?.bot_name ?? '',
       telegram_username: event.bots?.telegram_username ?? '',
+      avatar_url: event.bots?.avatar_url ?? '',
       old_rank: event.old_rank,
       new_rank: event.new_rank,
       amount_added: event.new_amount,

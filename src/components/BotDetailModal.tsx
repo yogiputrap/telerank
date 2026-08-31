@@ -25,7 +25,7 @@ export const BotDetailModal: React.FC<BotDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
+      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
         {/* Header: Verified checkmark is placed INLINE right after the bot name */}
         <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-[#e4ecf2]">
           <div className="flex items-start gap-3 min-w-0 flex-1">
@@ -58,7 +58,7 @@ export const BotDetailModal: React.FC<BotDetailModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0 ml-1"
+            className="p-1.5 rounded-xl text-[#707579] hover:text-[#1c242b] hover:bg-[#f4f7fa] transition-all cursor-pointer shrink-0 ml-1"
           >
             <MgcClose size={18} />
           </button>
