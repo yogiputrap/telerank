@@ -189,12 +189,12 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="w-full sm:w-auto flex items-center gap-2">
           <select
             value={category}
             aria-label="Pilih kategori bot"
             onChange={(e) => setCategory(e.target.value as BotCategory)}
-            className="px-3 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+            className="flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
           >
             {BOT_CATEGORIES.map((cat) => (
               <option key={cat.id} value={cat.id}>
@@ -205,7 +205,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
 
           <button
             type="submit"
-            className="px-5 py-2.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0"
+            className="flex-1 sm:flex-initial px-5 py-2.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-95 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0"
           >
             <span>Promosikan</span>
             <MgcArrowRight size={16} />
