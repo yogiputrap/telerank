@@ -29,7 +29,7 @@ create table public.bots (
   bot_name text not null check (char_length(bot_name) between 1 and 120),
   avatar_url text,
   description text not null default '' check (char_length(description) <= 150),
-  category text not null check (category in ('DOWNLOADER','AI','AI_TOOLS','ANON_CHAT','GAME','TOOLS','STORE')),
+  category text not null check (category in ('DOWNLOADER','AI_CHAT','GAMES_HIBURAN','DEV_API','STORE_TOPUP')),
   custom_tagline text not null default '',
   contact_handle text,
   current_sponsor_amount bigint not null default 0 check (current_sponsor_amount >= 0),

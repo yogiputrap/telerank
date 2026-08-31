@@ -12,11 +12,10 @@ interface CategoryFilterProps {
 const CATEGORIES: { id: BotCategory; label: string; icon: React.ReactNode }[] = [
   { id: 'ALL', label: 'Semua Bot', icon: <Flame className="w-3.5 h-3.5" /> },
   { id: 'DOWNLOADER', label: 'Downloader', icon: <Download className="w-3.5 h-3.5" /> },
-  { id: 'AI_TOOLS', label: 'AI Tools', icon: <BotIcon className="w-3.5 h-3.5" /> },
-  { id: 'ANON_CHAT', label: 'Anon Chat', icon: <MessageSquare className="w-3.5 h-3.5" /> },
-  { id: 'GAME', label: 'Mini Apps', icon: <Gamepad2 className="w-3.5 h-3.5" /> },
-  { id: 'TOOLS', label: 'Developer & Tools', icon: <Wrench className="w-3.5 h-3.5" /> },
-  { id: 'STORE', label: 'Store & Topup', icon: <ShoppingBag className="w-3.5 h-3.5" /> },
+  { id: 'AI_CHAT', label: 'AI Chat', icon: <BotIcon className="w-3.5 h-3.5" /> },
+  { id: 'GAMES_HIBURAN', label: 'Games & Hiburan', icon: <Gamepad2 className="w-3.5 h-3.5" /> },
+  { id: 'DEV_API', label: 'Developer & AI API', icon: <Wrench className="w-3.5 h-3.5" /> },
+  { id: 'STORE_TOPUP', label: 'Store & Topup', icon: <ShoppingBag className="w-3.5 h-3.5" /> },
 ];
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({

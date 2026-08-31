@@ -13,11 +13,17 @@ export async function POST(request: Request) {
     const botName = String(body.botName || '').trim();
     const amount = Number(body.amount);
     let category = String(body.category || 'DOWNLOADER').toUpperCase().trim();
-    if (['AI', 'AI_GENERATOR', 'AI_GATEWAY', 'AI_COPILOT'].includes(category)) {
-      category = 'AI_TOOLS';
+    if (['AI', 'AI_GENERATOR', 'AI_GATEWAY', 'AI_COPILOT', 'AI_TOOLS', 'AI_CHAT'].includes(category)) {
+      category = 'AI_CHAT';
+    } else if (['GAME', 'GAMES', 'ANON_CHAT', 'GAMES_HIBURAN'].includes(category)) {
+      category = 'GAMES_HIBURAN';
+    } else if (['TOOLS', 'DEVELOPER', 'API', 'DEV_API'].includes(category)) {
+      category = 'DEV_API';
+    } else if (['STORE', 'TOPUP', 'STORE_TOPUP'].includes(category)) {
+      category = 'STORE_TOPUP';
     }
     const description = String(body.description || '').trim();
-    const allowedCategories = ['DOWNLOADER', 'AI_TOOLS', 'ANON_CHAT', 'GAME', 'TOOLS', 'STORE'];
+    const allowedCategories = ['DOWNLOADER', 'AI_CHAT', 'GAMES_HIBURAN', 'DEV_API', 'STORE_TOPUP'];
     const fieldErrors: string[] = [];
     if (!username || !/^[a-zA-Z0-9_]{5,32}$/.test(username) || !/bot$/i.test(username)) fieldErrors.push('telegramUsername');
     if (!botName || botName.length > 120) fieldErrors.push('botName');
