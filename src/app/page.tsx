@@ -404,24 +404,26 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Category Pills */}
-          <div className="flex items-center justify-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-            {CATEGORIES.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#3390ec] text-white shadow-xs'
-                      : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              );
-            })}
+          {/* Category Pills - Smooth horizontal scroll on mobile with no cutoff on 'Semua' */}
+          <div className="w-full overflow-x-auto no-scrollbar py-1">
+            <div className="flex items-center justify-start sm:justify-center gap-1.5 min-w-max px-1 sm:px-0 mx-auto">
+              {CATEGORIES.map((cat) => {
+                const isActive = activeCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`px-3 py-1.5 sm:py-1 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-[#3390ec] text-white shadow-xs'
+                        : 'bg-white text-[#707579] hover:bg-[#eef5fc] hover:text-[#3390ec] border border-[#e4ecf2]'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 

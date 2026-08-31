@@ -25,6 +25,7 @@ export default function NewListingPage() {
   const [pendingOrder, setPendingOrder] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -87,38 +88,59 @@ export default function NewListingPage() {
     };
   }, [username]);
 
-  const projectedRank = (() => {
-    const sorted = [...currentBots].sort((a, b) => b.total_bid_amount - a.total_bid_amount);
-    let rank = sorted.length + 1;
-    for (let i = 0; i < sorted.length; i++) {
-      if (amount > sorted[i].total_bid_amount) {
-        rank = i + 1;
-        break;
-      }
+  // Dynamic projected rank
+  const cleanUsername = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim().toLowerCase();
+  const existingEntry = cleanUsername
+    ? currentBots.find((b) => b.telegram_username.toLowerCase() === cleanUsername)
+    : undefined;
+  const opponents = existingEntry
+    ? currentBots.filter((b) => b.id !== existingEntry.id)
+    : currentBots;
+  let projectedRank = opponents.length + 1;
+  for (let i = 0; i < opponents.length; i++) {
+    if (amount > opponents[i].total_bid_amount) {
+      projectedRank = i + 1;
+      break;
     }
-    return rank;
-  })();
+  }
 
   const handleDecrease = (val: number) => {
-    setHasManuallyEdited(true);
     setAmount((prev) => Math.max(1000, prev - val));
+    setHasManuallyEdited(true);
+    setError('');
   };
 
   const handleIncrease = (val: number) => {
-    setHasManuallyEdited(true);
     setAmount((prev) => prev + val);
+    setHasManuallyEdited(true);
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
+    setTouched(true);
+    
+    const cleanUsername = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
     const cleanBotName = botName.trim();
-    if (!cleanUsername || !cleanBotName || amount < 1000) return;
+
+    if (!cleanUsername) {
+      setError('Mohon masukkan username bot Telegram kamu.');
+      return;
+    }
     const localError = usernameError(cleanUsername);
     if (localError) {
       setError(localError);
       return;
     }
+    if (!cleanBotName) {
+      setError('Mohon masukkan nama judul bot Telegram kamu.');
+      return;
+    }
+    if (amount < 1000) {
+      setError('Nominal sponsor minimal Rp1.000.');
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
     try {
@@ -188,7 +210,7 @@ export default function NewListingPage() {
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit} className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-5">
+        <form onSubmit={handleSubmit} noValidate className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-5">
           {/* Projected Rank Banner */}
           <div className="flex items-center justify-between p-3 rounded-2xl bg-[#eef5fc] border border-[#d2e5f8]">
             <div className="space-y-0.5">
@@ -214,8 +236,15 @@ export default function NewListingPage() {
                 required
                 placeholder="NamaBot_bot (wajib akhiran 'bot')"
                 value={username}
-                onChange={(e) => setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''))}
-                className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+                onChange={(e) => {
+                  setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''));
+                  setError('');
+                }}
+                className={`w-full pl-8 pr-10 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                  touched && (!username.trim() || Boolean(usernameError(username)))
+                    ? 'border-rose-300 focus:border-rose-500'
+                    : 'border-[#e4ecf2] focus:border-[#3390ec]'
+                }`}
               />
               {isFetchingTg && (
                 <span className="absolute right-3 text-[#3390ec]">
@@ -224,10 +253,15 @@ export default function NewListingPage() {
               )}
             </div>
 
-            {username.trim().length >= 3 && !/bot$/i.test(username.trim()) ? (
-              <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1">
+            {touched && !username.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
                 <MgcWarning size={12} className="shrink-0" />
-                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.</span>
+                <span>Username bot Telegram wajib diisi.</span>
+              </p>
+            ) : username.trim().length >= 3 && !/bot$/i.test(username.trim()) ? (
+              <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot).</span>
               </p>
             ) : (
               <p className="text-[11px] text-[#707579]">
@@ -285,9 +319,24 @@ export default function NewListingPage() {
               required
               placeholder="Contoh: TikGrab — Download Video TikTok HD"
               value={botName}
-              onChange={(e) => setBotName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+              onChange={(e) => {
+                setBotName(e.target.value);
+                setError('');
+              }}
+              className={`w-full px-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                touched && !botName.trim()
+                  ? 'border-rose-300 focus:border-rose-500'
+                  : 'border-[#e4ecf2] focus:border-[#3390ec]'
+              }`}
             />
+            {touched && !botName.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Nama judul bot wajib diisi.</span>
+              </p>
+            ) : (
+              <p className="text-[10px] text-[#707579]">Judul yang tampil di direktori (contoh: TikGrab — TikTok Downloader)</p>
+            )}
           </div>
 
           {/* Kategori */}
@@ -337,7 +386,9 @@ export default function NewListingPage() {
               <span className="text-[11px] text-[#707579]">Minimal Rp1.000</span>
             </div>
 
-            <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white">
+            <div className={`flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border transition-all ${
+              amount < 1000 ? 'border-rose-300 bg-rose-50/40' : 'border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white'
+            }`}>
               <button
                 type="button"
                 onClick={() => handleDecrease(1000)}
@@ -364,13 +415,25 @@ export default function NewListingPage() {
               </button>
             </div>
 
+            {/* Dynamic Status / Validation Helper Box */}
+            {amount < 1000 && (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 animate-in fade-in duration-150">
+                <MgcWarning size={15} className="shrink-0 mt-0.5 text-rose-600" />
+                <span>Nominal listing awal minimal <strong>Rp1.000</strong>.</span>
+              </div>
+            )}
+
             {/* Quick Chips */}
             <div className="grid grid-cols-4 gap-2 pt-1">
               {[5000, 10000, 25000, 50000].map((val) => (
                 <button
                   type="button"
                   key={val}
-                  onClick={() => setAmount(val)}
+                  onClick={() => {
+                    setAmount(val);
+                    setHasManuallyEdited(true);
+                    setError('');
+                  }}
                   className={`py-1.5 rounded-lg text-xs font-mono font-bold border transition-all cursor-pointer ${
                     amount === val
                       ? 'bg-[#3390ec] text-white border-[#3390ec] shadow-xs'
@@ -384,17 +447,24 @@ export default function NewListingPage() {
           </div>
 
           {/* Submit Button */}
-          {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
+          {error && (
+            <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2 animate-in fade-in duration-150">
+              <MgcWarning size={15} className="shrink-0 mt-0.5 text-rose-600" />
+              <span>{error}</span>
+            </div>
+          )}
           <button
             type="submit"
-            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000 || Boolean(usernameError(username))}
+            disabled={isSubmitting}
             className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4 disabled:opacity-50"
           >
-            <span>Lanjut Bayar QRIS Instan</span>
-            <span className="font-mono text-amber-200 font-black">
-              Rp {amount.toLocaleString('id-ID')}
-            </span>
-            <MgcArrowRight size={15} />
+            <span>{isSubmitting ? 'Memproses Order...' : 'Lanjut Bayar QRIS Instan'}</span>
+            {!isSubmitting && (
+              <span className="font-mono text-amber-200 font-black">
+                Rp {amount.toLocaleString('id-ID')}
+              </span>
+            )}
+            {!isSubmitting && <MgcArrowRight size={15} />}
           </button>
         </form>
       </main>

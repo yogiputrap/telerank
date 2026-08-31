@@ -42,6 +42,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   const [tgFetched, setTgfetcHed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,6 +53,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
       setError('');
       setAvatarUrl('');
       setTgfetcHed(false);
+      setTouched(false);
     }
   }, [isOpen, initialUsername, initialCategory, initialAmount, currentBots]);
 
@@ -128,12 +130,26 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
+    setTouched(true);
+
+    const cleanUsername = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
     const cleanBotName = botName.trim();
-    if (!cleanUsername || !cleanBotName || amount < 1000) return;
+
+    if (!cleanUsername) {
+      setError('Mohon masukkan username bot Telegram kamu.');
+      return;
+    }
     const localError = usernameError(cleanUsername);
     if (localError) {
       setError(localError);
+      return;
+    }
+    if (!cleanBotName) {
+      setError('Mohon masukkan nama judul bot Telegram kamu.');
+      return;
+    }
+    if (amount < 1000) {
+      setError('Nominal sponsor minimal Rp1.000.');
       return;
     }
 
@@ -194,7 +210,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
         </div>
 
         {/* Modal Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} noValidate className="space-y-3.5 text-xs">
           {/* Input 1: Username Bot Telegram (Mandatory) */}
           <div className="space-y-1">
             <label className="block text-xs font-bold text-[#1c242b]">
@@ -207,8 +223,15 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                 required
                 placeholder="NamaBot_bot (wajib akhiran 'bot')"
                 value={username}
-                onChange={(e) => setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''))}
-                className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+                onChange={(e) => {
+                  setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''));
+                  setError('');
+                }}
+                className={`w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                  touched && (!username.trim() || Boolean(usernameError(username)))
+                    ? 'border-rose-300 focus:border-rose-500'
+                    : 'border-[#e4ecf2] focus:border-[#3390ec]'
+                }`}
               />
               {isFetchingTg && (
                 <span className="absolute right-3 text-[#3390ec]">
@@ -217,11 +240,18 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               )}
             </div>
 
-            {username.trim().length >= 3 && !/bot$/i.test(username.trim()) && (
+            {touched && !username.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Username bot Telegram wajib diisi.</span>
+              </p>
+            ) : username.trim().length >= 3 && !/bot$/i.test(username.trim()) ? (
               <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1 pt-0.5">
                 <MgcWarning size={12} className="shrink-0" />
-                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.</span>
+                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot).</span>
               </p>
+            ) : (
+              <p className="text-[10px] text-[#707579]">Gunakan akhiran 'bot' (contoh: @NamaBot)</p>
             )}
 
             {/* Telegram Profile Auto-Sync Preview Card */}
@@ -274,9 +304,24 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               required
               placeholder="Contoh: TikGrab — TikTok Downloader HD"
               value={botName}
-              onChange={(e) => setBotName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+              onChange={(e) => {
+                setBotName(e.target.value);
+                setError('');
+              }}
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                touched && !botName.trim()
+                  ? 'border-rose-300 focus:border-rose-500'
+                  : 'border-[#e4ecf2] focus:border-[#3390ec]'
+              }`}
             />
+            {touched && !botName.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Nama judul bot wajib diisi.</span>
+              </p>
+            ) : (
+              <p className="text-[10px] text-[#707579]">Judul yang tampil di direktori (contoh: TikGrab — TikTok Downloader)</p>
+            )}
           </div>
 
           {/* Input 3: Kategori Bot (Mandatory) */}
@@ -326,7 +371,9 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               <span className="text-[11px] text-[#707579]">Ketik manual bebas (Min Rp1.000)</span>
             </div>
 
-            <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white transition-all">
+            <div className={`flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border transition-all ${
+              amount < 1000 ? 'border-rose-300 bg-rose-50/40' : 'border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white'
+            }`}>
               <button
                 type="button"
                 onClick={() => handleDecrease(1000)}
@@ -350,16 +397,6 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                     placeholder="1.000"
                   />
                 </div>
-                <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
-                  {amount >= 1000 ? (
-                    `Mendapatkan Peringkat #${projectedRank}`
-                  ) : (
-                    <span className="text-rose-600 font-bold flex items-center justify-center gap-1">
-                      <MgcWarning size={12} className="shrink-0" />
-                      <span>Minimal listing Rp1.000</span>
-                    </span>
-                  )}
-                </span>
               </div>
 
               <button
@@ -372,11 +409,26 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               </button>
             </div>
 
+            {/* Dynamic Status / Validation Helper Box */}
+            {amount < 1000 ? (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 animate-in fade-in duration-150">
+                <MgcWarning size={15} className="shrink-0 mt-0.5 text-rose-600" />
+                <span>Nominal listing minimal <strong>Rp1.000</strong>.</span>
+              </div>
+            ) : (
+              <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center justify-between gap-1.5 animate-in fade-in duration-150">
+                <div className="flex items-center gap-1.5">
+                  <MgcCheckCircle size={15} className="shrink-0 text-emerald-600" />
+                  <span>Mendapatkan <strong>Peringkat #{projectedRank}</strong></span>
+                </div>
+              </div>
+            )}
+
             {/* Quick Preset Chips */}
             <div className="space-y-1 pt-1">
               <span className="text-[11px] font-semibold text-[#707579]">Tambah Cepat:</span>
               <div className="grid grid-cols-5 gap-1.5 text-center">
-                {[1000, 5000, 10000, 50000, 100000].map((step) => (
+                {[1000, 5000, 10000, 25000, 50000].map((step) => (
                   <button
                     type="button"
                     key={step}
@@ -392,10 +444,15 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
 
           {/* Submit CTA */}
           <div className="pt-2 space-y-1.5">
-            {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
+            {error && (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2 animate-in fade-in duration-150">
+                <MgcWarning size={15} className="shrink-0 mt-0.5 text-rose-600" />
+                <span>{error}</span>
+              </div>
+            )}
             <button
               type="submit"
-              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000 || Boolean(usernameError(username))}
+              disabled={isSubmitting}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>

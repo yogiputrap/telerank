@@ -30,7 +30,9 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   currentBots,
   onProceedPayment,
 }) => {
-  const minRequired = targetBot ? targetBot.total_bid_amount + 1000 : 1000;
+  const targetAmount = Number(targetBot?.total_bid_amount ?? targetBot?.current_sponsor_amount ?? 0);
+  const minRequired = targetAmount > 0 ? targetAmount + 1000 : 1000;
+
   const [amount, setAmount] = useState<number>(minRequired);
   const [username, setUsername] = useState('');
   const [botName, setBotName] = useState('');
@@ -41,14 +43,18 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
   const [tgFetched, setTgfetcHed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
     if (targetBot) {
-      setAmount(targetBot.total_bid_amount + 1000);
+      const tAmt = Number(targetBot.total_bid_amount ?? targetBot.current_sponsor_amount ?? 0);
+      const req = tAmt > 0 ? tAmt + 1000 : 1000;
+      setAmount(req);
       setCategory(targetBot.category || 'DOWNLOADER');
       setError('');
       setAvatarUrl('');
       setTgfetcHed(false);
+      setTouched(false);
     }
   }, [targetBot]);
 
@@ -115,26 +121,43 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
 
   const handleAdd = (val: number) => {
     setAmount((prev) => prev + val);
+    setError('');
   };
 
   const handleDecrease = (val: number) => {
-    setAmount((prev) => Math.max(1, prev - val));
+    setAmount((prev) => Math.max(1000, prev - val));
+    setError('');
   };
 
   const handleManualChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, '');
     const val = raw === '' ? 0 : parseInt(raw, 10);
     setAmount(val);
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUsername = username.replace('https://t.me/', '').replace('@', '').trim();
-    const cleanBotName = botName.trim();
-    if (!cleanUsername || !cleanBotName || amount < minRequired) return;
-    const localError = usernameError(cleanUsername);
+    setTouched(true);
+
+    const cleanUser = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+    const cleanBot = botName.trim();
+
+    if (!cleanUser) {
+      setError('Mohon masukkan username bot Telegram kamu.');
+      return;
+    }
+    const localError = usernameError(cleanUser);
     if (localError) {
       setError(localError);
+      return;
+    }
+    if (!cleanBot) {
+      setError('Mohon masukkan nama judul bot Telegram kamu.');
+      return;
+    }
+    if (amount < minRequired) {
+      setError(`Nominal sponsor harus minimal Rp ${minRequired.toLocaleString('id-ID')} untuk merebut posisi #${targetRank} (lebih tinggi dari Rp ${targetAmount.toLocaleString('id-ID')}).`);
       return;
     }
 
@@ -142,8 +165,8 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
     setError('');
     try {
       const failure = await onProceedPayment({
-        challengerUsername: cleanUsername,
-        challengerBotName: cleanBotName,
+        challengerUsername: cleanUser,
+        challengerBotName: cleanBot,
         challengerDescription: description.trim(),
         challengerCategory: category,
         amount,
@@ -193,7 +216,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
             <div className="flex items-center justify-between gap-1 mb-0.5">
               <span className="text-[10px] font-bold text-[#707579] uppercase">Posisi yang direbut:</span>
               <span className="text-[11px] font-mono font-bold text-[#3390ec] bg-[#eef5fc] px-1.5 py-0.5 rounded" title="Posisi berubah mengikuti nominal sponsor">
-                #{projectedRank}
+                #{targetRank}
               </span>
             </div>
             <h4 className="font-bold text-xs text-[#1c242b] truncate">
@@ -205,13 +228,13 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
               )}
             </h4>
             <p className="text-[11px] text-[#707579] font-mono">
-              Sponsor saat ini: <strong className="text-[#1c242b]">Rp{targetBot.total_bid_amount.toLocaleString('id-ID')}</strong>
+              Sponsor saat ini: <strong className="text-[#1c242b]">Rp{targetAmount.toLocaleString('id-ID')}</strong>
             </p>
           </div>
         </div>
 
         {/* Interactive Rebut Form */}
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+        <form onSubmit={handleSubmit} noValidate className="space-y-3.5 text-xs">
           {/* Input 1: Username Bot Challenger (Mandatory) */}
           <div className="space-y-1">
             <label className="block text-xs font-bold text-[#1c242b]">
@@ -224,8 +247,15 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                 required
                 placeholder="NamaBot_bot (wajib akhiran 'bot')"
                 value={username}
-                onChange={(e) => setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''))}
-                className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+                onChange={(e) => {
+                  setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''));
+                  setError('');
+                }}
+                className={`w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                  touched && (!username.trim() || Boolean(usernameError(username)))
+                    ? 'border-rose-300 focus:border-rose-500'
+                    : 'border-[#e4ecf2] focus:border-[#3390ec]'
+                }`}
               />
               {isFetchingTg && (
                 <span className="absolute right-3 text-[#3390ec]">
@@ -234,11 +264,18 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
               )}
             </div>
 
-            {username.trim().length >= 3 && !/bot$/i.test(username.trim()) && (
+            {touched && !username.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Username bot Telegram wajib diisi.</span>
+              </p>
+            ) : username.trim().length >= 3 && !/bot$/i.test(username.trim()) ? (
               <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1 pt-0.5">
                 <MgcWarning size={12} className="shrink-0" />
-                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.</span>
+                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot).</span>
               </p>
+            ) : (
+              <p className="text-[10px] text-[#707579]">Gunakan akhiran 'bot' (contoh: @NamaBot)</p>
             )}
 
             {/* Telegram Profile Auto-Sync Preview Card */}
@@ -291,9 +328,24 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
               required
               placeholder="Contoh: TikGrab — TikTok Downloader HD"
               value={botName}
-              onChange={(e) => setBotName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+              onChange={(e) => {
+                setBotName(e.target.value);
+                setError('');
+              }}
+              className={`w-full px-3.5 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border transition-colors focus:outline-none focus:bg-white ${
+                touched && !botName.trim()
+                  ? 'border-rose-300 focus:border-rose-500'
+                  : 'border-[#e4ecf2] focus:border-[#3390ec]'
+              }`}
             />
+            {touched && !botName.trim() ? (
+              <p className="text-[11px] text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Nama judul bot wajib diisi.</span>
+              </p>
+            ) : (
+              <p className="text-[10px] text-[#707579]">Judul yang tampil di papan peringkat direktori</p>
+            )}
           </div>
 
           {/* Input 3: Kategori Bot (Mandatory) */}
@@ -334,7 +386,7 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
             />
           </div>
 
-          {/* Input 5: Stepper Nominal Sponsor with 1-Rupiah precision */}
+          {/* Input 5: Stepper Nominal Sponsor */}
           <div className="space-y-2 pt-2 border-t border-[#e4ecf2]">
             <div className="flex justify-between items-center">
               <label className="block text-xs font-bold text-[#1c242b]">
@@ -343,7 +395,9 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
               <span className="text-[11px] text-[#707579]">Ketik manual bebas</span>
             </div>
 
-            <div className="flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white transition-all">
+            <div className={`flex items-center justify-between gap-2 p-2 bg-[#f4f7fa] rounded-2xl border transition-all ${
+              amount < minRequired ? 'border-rose-300 bg-rose-50/40' : 'border-[#e4ecf2] focus-within:border-[#3390ec] focus-within:bg-white'
+            }`}>
               <button
                 type="button"
                 onClick={() => handleDecrease(1000)}
@@ -367,9 +421,6 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                     placeholder="1.000"
                   />
                 </div>
-                <span className="block text-[10px] text-[#3390ec] font-semibold pt-0.5">
-                  Mendapatkan Peringkat #{projectedRank}
-                </span>
               </div>
 
               <button
@@ -381,6 +432,26 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
                 <MgcAdd size={14} />
               </button>
             </div>
+
+            {/* Dynamic Status / Validation Helper Box for Amount */}
+            {amount < minRequired ? (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2 animate-in fade-in duration-150">
+                <MgcWarning size={16} className="shrink-0 mt-0.5 text-rose-600" />
+                <div>
+                  <p className="font-bold text-rose-800">Nominal belum mencukupi untuk merebut posisi #{targetRank}</p>
+                  <p className="text-[11px] font-normal text-rose-600">
+                    Minimal sponsor adalah <strong>Rp {minRequired.toLocaleString('id-ID')}</strong> (harus lebih tinggi dari sponsor saat ini: Rp {targetAmount.toLocaleString('id-ID')}).
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center justify-between gap-1.5 animate-in fade-in duration-150">
+                <div className="flex items-center gap-1.5">
+                  <MgcCheckCircle size={15} className="shrink-0 text-emerald-600" />
+                  <span>Memenuhi syarat untuk menempati <strong>Peringkat #{projectedRank}</strong></span>
+                </div>
+              </div>
+            )}
 
             {/* Quick Preset Chips */}
             <div className="space-y-1 pt-1">
@@ -402,10 +473,15 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
 
           {/* Submit CTA */}
           <div className="pt-2 space-y-1.5">
-            {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
+            {error && (
+              <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2 animate-in fade-in duration-150">
+                <MgcWarning size={15} className="shrink-0 mt-0.5 text-rose-600" />
+                <span>{error}</span>
+              </div>
+            )}
             <button
               type="submit"
-              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < minRequired || Boolean(usernameError(username))}
+              disabled={isSubmitting}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>
