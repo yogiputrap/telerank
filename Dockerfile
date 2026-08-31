@@ -8,7 +8,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci
+RUN \
+  if [ -f package-lock.json ]; then npm ci --prefer-offline --no-audit; \
+  else npm install --prefer-offline --no-audit; \
+  fi
 
 # Stage 3: Builder
 FROM base AS builder
