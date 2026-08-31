@@ -326,7 +326,7 @@ export default function BotDetailPage() {
             </div>
             <div className="p-2.5 rounded-xl bg-[#f4f7fa] border border-[#e4ecf2]">
               <span className="block text-[10px] text-[#707579] uppercase font-bold">Total Sponsor</span>
-              <span className="font-mono text-sm sm:text-base font-black text-[#1c242b]">
+              <span className="font-mono text-xs sm:text-base font-black text-[#1c242b] block truncate">
                 Rp{bot.total_bid_amount.toLocaleString('id-ID')}
               </span>
             </div>

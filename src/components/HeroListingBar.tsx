@@ -104,13 +104,15 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
           LISTING BOT TELEGRAM
         </span>
 
-        {/* Big Stepper Headline - Telegram Blue Stepper Strictly 1 Line */}
-        <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 text-base sm:text-2xl md:text-3xl font-black text-[#1c242b] whitespace-nowrap overflow-x-auto no-scrollbar py-1">
-          <span>Ambil posisi</span>
-          <span className="px-2.5 py-0.5 rounded-xl bg-[#3390ec] text-white font-mono font-black shadow-xs shrink-0">
-            #{projectedRank}
-          </span>
-          <span>dengan</span>
+        {/* Big Stepper Headline - Fully Responsive for Mobile and Desktop */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 text-lg sm:text-2xl md:text-3xl font-black text-[#1c242b] py-1">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span>Ambil posisi</span>
+            <span className="px-2.5 py-0.5 rounded-xl bg-[#3390ec] text-white font-mono font-black shadow-xs shrink-0 text-sm sm:text-2xl">
+              #{projectedRank}
+            </span>
+            <span>dengan</span>
+          </div>
 
           {/* Stepper with Minus - Editable Input - Plus */}
           <div className="inline-flex items-center gap-1 sm:gap-1.5 shrink-0">
@@ -124,7 +126,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
             </button>
 
             {/* Direct Editable Custom Price Input */}
-            <div className="flex items-center border-b-2 border-[#3390ec] bg-[#eef5fc] hover:bg-[#e4f0fa] focus-within:bg-[#e4f0fa] px-2.5 py-0.5 rounded-t-lg transition-colors shrink-0">
+            <div className="flex items-center border-b-2 border-[#3390ec] bg-[#eef5fc] hover:bg-[#e4f0fa] focus-within:bg-[#e4f0fa] px-2 sm:px-2.5 py-0.5 rounded-t-lg transition-colors shrink-0">
               <span className="font-mono text-base sm:text-2xl md:text-3xl text-[#3390ec] font-bold mr-0.5 select-none">
                 Rp
               </span>
