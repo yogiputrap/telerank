@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
 import { PayKitaQRISModal } from '../../components/PayKitaQRISModal';
-import { MgcArrowRight, MgcSubtract, MgcAdd, MgcLoading, MgcCheckCircle } from '../../components/MingCuteIcons';
+import { MgcArrowRight, MgcSubtract, MgcAdd, MgcLoading, MgcCheckCircle, MgcWarning } from '../../components/MingCuteIcons';
 import { orderErrorMessage, usernameError } from '../../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../../types';
 
@@ -40,7 +40,7 @@ export default function NewListingPage() {
   // Auto-fetch Telegram bot info & avatar when username is entered
   useEffect(() => {
     const clean = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
-    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean)) {
+    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean) || !/bot$/i.test(clean)) {
       setTgfetcHed(false);
       return;
     }
@@ -59,10 +59,12 @@ export default function NewListingPage() {
           setAvatarUrl(data.avatarUrl);
         }
         if (data.botName) {
-          setBotName((prev) => (!prev || prev === clean ? data.botName : prev));
+          setBotName(data.botName);
+        } else {
+          setBotName(clean);
         }
-        if (data.description) {
-          setDescription((prev) => (!prev ? data.description : prev));
+        if (data.description !== undefined) {
+          setDescription(data.description);
         }
         setTgfetcHed(true);
       } catch (err) {
@@ -201,9 +203,9 @@ export default function NewListingPage() {
               <input
                 type="text"
                 required
-                placeholder="NamaBot_bot"
+                placeholder="NamaBot_bot (wajib akhiran 'bot')"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''))}
                 className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
               />
               {isFetchingTg && (
@@ -212,9 +214,17 @@ export default function NewListingPage() {
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-[#707579]">
-              Masukkan username bot (misal: TikGrab_Bot). Nama, foto & bio akan terisi otomatis.
-            </p>
+
+            {username.trim().length >= 3 && !/bot$/i.test(username.trim()) ? (
+              <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.</span>
+              </p>
+            ) : (
+              <p className="text-[11px] text-[#707579]">
+                Masukkan username bot (misal: TikGrab_Bot). Nama, foto & bio akan terisi otomatis.
+              </p>
+            )}
 
             {/* Telegram Profile Auto-Sync Preview Card */}
             {(isFetchingTg || tgFetched || avatarUrl) && username.trim().length >= 5 && (
@@ -237,9 +247,9 @@ export default function NewListingPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="font-bold text-xs text-[#1c242b] truncate">
-                      {botName || `@${username.replace(/^@/, '')}`}
+                      {isFetchingTg ? `@${username.replace(/^@/, '')}` : (botName || `@${username.replace(/^@/, '')}`)}
                     </span>
-                    {tgFetched && (
+                    {tgFetched && !isFetchingTg && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-bold shrink-0">
                         <MgcCheckCircle size={10} />
                         Auto-sync Telegram
@@ -368,7 +378,7 @@ export default function NewListingPage() {
           {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
           <button
             type="submit"
-            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000}
+            disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000 || Boolean(usernameError(username))}
             className="w-full py-3.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer mt-4 disabled:opacity-50"
           >
             <span>Lanjut Bayar QRIS Instan</span>

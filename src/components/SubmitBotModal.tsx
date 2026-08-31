@@ -1,8 +1,8 @@
-'use client';
-
 import React, { useState } from 'react';
 import { X, Bot as BotIcon, Sparkles, ArrowRight } from 'lucide-react';
-import { Bot, BotCategory } from '../types';
+import { MgcWarning } from './MingCuteIcons';
+import { usernameError } from '../lib/orderErrors';
+import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
 interface SubmitBotModalProps {
   isOpen: boolean;
@@ -31,11 +31,19 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   const [botChecked, setBotChecked] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&auto=format&fit=crop&q=80');
 
+  const [usernameErr, setUsernameErr] = useState('');
+
   if (!isOpen) return null;
 
   const handleCheckBot = () => {
-    const cleanUsername = telegramUsername.replace('@', '').trim();
+    const cleanUsername = telegramUsername.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
     if (!cleanUsername) return;
+    const err = usernameError(cleanUsername);
+    if (err) {
+      setUsernameErr(err);
+      return;
+    }
+    setUsernameErr('');
 
     setIsCheckingBot(true);
     setTimeout(() => {
@@ -66,8 +74,14 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUsername = telegramUsername.replace('@', '').trim();
+    const cleanUsername = telegramUsername.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
     if (!cleanUsername) return;
+    const err = usernameError(cleanUsername);
+    if (err) {
+      setUsernameErr(err);
+      return;
+    }
+    setUsernameErr('');
 
     const newBotData: Partial<Bot> = {
       telegram_username: cleanUsername,
@@ -119,11 +133,17 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="NamaBotKamu_bot"
+                  placeholder="NamaBotKamu_bot (wajib akhiran 'bot')"
                   value={telegramUsername}
                   onChange={(e) => {
-                    setTelegramUsername(e.target.value);
+                    const raw = e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '');
+                    setTelegramUsername(raw);
                     setBotChecked(false);
+                    if (raw.length >= 3 && !/bot$/i.test(raw)) {
+                      setUsernameErr('Username bot harus berakhiran kata "bot" (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.');
+                    } else {
+                      setUsernameErr('');
+                    }
                   }}
                   className="w-full pl-8 pr-3 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-teal-500"
                 />
@@ -131,12 +151,18 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
               <button
                 type="button"
                 onClick={handleCheckBot}
-                disabled={isCheckingBot || !telegramUsername}
+                disabled={isCheckingBot || !telegramUsername || Boolean(usernameError(telegramUsername))}
                 className="px-4 py-2.5 rounded-2xl bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold text-xs whitespace-nowrap active:scale-95 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isCheckingBot ? 'Mengecek...' : botChecked ? 'Terverifikasi' : 'Cek Bot'}
               </button>
             </div>
+            {usernameErr && (
+              <p className="text-xs text-rose-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={13} className="shrink-0" />
+                <span>{usernameErr}</span>
+              </p>
+            )}
           </div>
 
           {/* Details */}
@@ -159,12 +185,11 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
                 onChange={(e) => setCategory(e.target.value as BotCategory)}
                 className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:bg-white focus:border-teal-500"
               >
-                <option value="DOWNLOADER">Downloader</option>
-                <option value="AI">AI Copilot</option>
-                <option value="ANON_CHAT">Anon Chat</option>
-                <option value="GAME">Mini Apps</option>
-                <option value="TOOLS">Developer & Tools</option>
-                <option value="STORE">Store & Topup</option>
+                {BOT_CATEGORIES.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

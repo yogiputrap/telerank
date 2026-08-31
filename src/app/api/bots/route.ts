@@ -38,6 +38,7 @@ export async function GET(request: Request) {
       is_verified: bot.is_verified,
       is_online: bot.is_online,
       created_at: bot.created_at,
+      sponsor_updated_at: bot.sponsor_updated_at,
     }));
     return NextResponse.json({ data: sliced, offset, limit, total: filtered.length, source: 'local_fallback' });
   }

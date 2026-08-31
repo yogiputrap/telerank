@@ -7,7 +7,7 @@ export function orderErrorMessage(err: unknown): string {
     case 'RATE_LIMITED':
       return 'Terlalu banyak percobaan. Tunggu beberapa menit lalu coba lagi.';
     case 'VALIDATION_ERROR':
-      return 'Data tidak valid. Username bot harus 5–32 karakter (huruf, angka, garis bawah), nama judul wajib diisi, dan nominal minimal Rp1.000.';
+      return 'Data tidak valid. Username bot harus 5–32 karakter dan berakhiran "bot" (contoh: @NamaBot), nama judul wajib diisi, dan nominal minimal Rp1.000.';
     case 'PAYMENT_PROVIDER_UNAVAILABLE':
       return 'Gateway pembayaran sedang tidak merespons. Coba lagi beberapa saat.';
     case 'BACKEND_UNAVAILABLE':
@@ -21,8 +21,15 @@ export function orderErrorMessage(err: unknown): string {
 
 /** Client-side guard mirroring the server's username rule so users see the reason before submitting. */
 export function usernameError(username: string): string {
-  if (!/^[a-zA-Z0-9_]{5,32}$/.test(username)) {
-    return 'Username bot hanya boleh huruf, angka, dan garis bawah (_), panjang 5–32 karakter. Tanpa spasi, tanda hubung, atau titik.';
+  const clean = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+  if (!clean) {
+    return 'Username bot wajib diisi.';
+  }
+  if (!/^[a-zA-Z0-9_]{5,32}$/.test(clean)) {
+    return 'Username bot hanya boleh huruf, angka, dan garis bawah (_), panjang 5–32 karakter.';
+  }
+  if (!/bot$/i.test(clean)) {
+    return 'Username bot harus berakhiran kata "bot" (contoh: @NamaBot atau @tools_bot) untuk memastikan ini adalah Bot Telegram, bukan grup/channel/pribadi.';
   }
   return '';
 }

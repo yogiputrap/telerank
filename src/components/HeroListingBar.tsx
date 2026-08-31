@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { MgcAdd, MgcSubtract, MgcArrowRight, MgcTelegram } from './MingCuteIcons';
+import { MgcAdd, MgcSubtract, MgcArrowRight, MgcTelegram, MgcWarning } from './MingCuteIcons';
+import { usernameError } from '../lib/orderErrors';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
 interface HeroListingBarProps {
@@ -19,6 +20,7 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
   const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
   const [category, setCategory] = useState<BotCategory>('DOWNLOADER');
+  const [inlineError, setInlineError] = useState('');
 
   // Sync recommended amount when currentBots loads if not manually edited
   useEffect(() => {
@@ -68,10 +70,29 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
     setAmount(val);
   };
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+    setUsernameInput(raw);
+    if (raw.length >= 3 && !/bot$/i.test(raw)) {
+      setInlineError('Username bot harus berakhiran "bot" (contoh: @NamaBot atau @my_bot)');
+    } else {
+      setInlineError('');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanUsername = usernameInput.replace('https://t.me/', '').replace('@', '').trim();
-    if (!cleanUsername || amount <= 0) return;
+    const cleanUsername = usernameInput.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
+    if (!cleanUsername) {
+      setInlineError('Masukkan username bot Telegram.');
+      return;
+    }
+    const err = usernameError(cleanUsername);
+    if (err) {
+      setInlineError(err);
+      return;
+    }
+    setInlineError('');
     onSubmit(cleanUsername, category, amount);
   };
 
@@ -140,17 +161,17 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
         className="max-w-2xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-white p-2 rounded-2xl border border-[#e4ecf2] shadow-xs"
       >
         <div className="relative flex-1 flex items-center">
-          <div className="absolute left-3 text-[#3390ec] pointer-events-none">
-            <MgcTelegram size={16} />
-          </div>
+          <span className="absolute left-3.5 text-[#3390ec] font-mono text-sm font-bold select-none">
+            @
+          </span>
           <input
             id="fast-submit-input"
             type="text"
             required
-            placeholder="Username bot (misal: @NamaBot)..."
+            placeholder="UsernameBot_bot (wajib akhiran 'bot')..."
             value={usernameInput}
-            onChange={(e) => setUsernameInput(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] placeholder:text-[#707579] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
+            onChange={handleUsernameChange}
+            className="w-full pl-8 pr-4 py-2.5 rounded-xl text-xs sm:text-sm text-[#1c242b] placeholder:text-[#707579] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
           />
         </div>
 
@@ -177,9 +198,16 @@ export const HeroListingBar: React.FC<HeroListingBarProps> = ({
         </div>
       </form>
 
-      <p className="text-[11px] text-[#707579]">
-        Sudah ada di ranking? Masukkan username yang sama untuk menambah bid.
-      </p>
+      {inlineError ? (
+        <p className="text-xs text-rose-600 font-semibold flex items-center justify-center gap-1 animate-in fade-in duration-150">
+          <MgcWarning size={13} className="shrink-0" />
+          <span>{inlineError}</span>
+        </p>
+      ) : (
+        <p className="text-[11px] text-[#707579]">
+          Sudah ada di ranking? Masukkan username yang sama untuk menambah bid.
+        </p>
+      )}
     </div>
   );
 };

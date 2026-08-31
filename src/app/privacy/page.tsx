@@ -51,7 +51,7 @@ export default function PrivacyPage() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">3. Keamanan Data Transaksi</h2>
             <p>
-              TeleRank.id tidak menyimpan data kartu kredit atau kredensial perbankan pengguna. Seluruh pemrosesan pembayaran dilakukan melalui gateway QRIS berstandar Bank Indonesia dengan enkripsi SSL 256-bit.
+              TeleRank tidak menyimpan data kartu kredit atau kredensial perbankan pengguna. Seluruh pemrosesan pembayaran dilakukan melalui gateway QRIS berstandar Bank Indonesia dengan enkripsi SSL 256-bit.
             </p>
           </section>
 

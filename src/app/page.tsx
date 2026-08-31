@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Header } from '../components/Header';
 import { HeroPodiumCard } from '../components/HeroPodiumCard';
 import { HeroListingBar } from '../components/HeroListingBar';
@@ -137,35 +137,49 @@ export default function Home() {
     oldRank?: number;
   } | null>(null);
 
-  // Sort bots: Sponsor Amount is strictly the primary determinant of rank.
-  // When amounts are identical (tie):
-  // - In 'TODAY' mode: tie-breaker is daily_clicks (activity today) then registration time.
-  // - In 'ALL' mode: tie-breaker is database rank / first-come first-served registration time.
-  const sortedBots = [...bots].sort((a, b) => {
-    // 1. Primary: Sponsor Amount (Descending)
-    const diffAmount = (b.total_bid_amount || 0) - (a.total_bid_amount || 0);
-    if (diffAmount !== 0) return diffAmount;
+  // Sort bots: PURELY AND STRICTLY DETERMINED BY SPONSOR VALUE (total_bid_amount DESCENDING).
+  // Clicks do NOT affect rank. If amount is tied, first-come first-served (registration time).
+  const sortedBots = useMemo(() => {
+    return [...bots].sort((a, b) => {
+      // 1. Primary & Absolute determinant: Total Sponsor Amount (Descending)
+      const amountDiff = (b.total_bid_amount || 0) - (a.total_bid_amount || 0);
+      if (amountDiff !== 0) return amountDiff;
 
-    // 2. Tie-breaker when sponsor amount is equal:
-    if (timeFilter === 'TODAY') {
-      const clickDiff = (b.daily_clicks || 0) - (a.daily_clicks || 0);
-      if (clickDiff !== 0) return clickDiff;
-    }
+      // 2. Stable fallback tie-breaker: Database rank / registration time
+      if (a.rank && b.rank) return a.rank - b.rank;
+      return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    });
+  }, [bots]);
 
-    // 3. Fallback stable tie-breaker:
-    if (a.rank && b.rank) return a.rank - b.rank;
-    return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
-  });
+  // Filter bots by time ('ALL' vs 'TODAY'), category, and search
+  const filteredBots = useMemo(() => {
+    const now = new Date();
+    const isToday = (dateStr?: string) => {
+      if (!dateStr) return false;
+      const d = new Date(dateStr);
+      const diffHours = (now.getTime() - d.getTime()) / (1000 * 60 * 60);
+      return d.toDateString() === now.toDateString() || (diffHours >= 0 && diffHours <= 24);
+    };
 
-  // Filter bots by category and search
-  const filteredBots = sortedBots.filter((bot) => {
-    const matchCategory = activeCategory === 'ALL' || bot.category === activeCategory;
-    const matchSearch =
-      bot.bot_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bot.telegram_username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bot.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchCategory && matchSearch;
-  });
+    return sortedBots.filter((bot) => {
+      // 1. Time Filter: 'TODAY' only displays bots with sponsor/listing activity today or past 24 hours
+      if (timeFilter === 'TODAY') {
+        const activeToday = isToday(bot.sponsor_updated_at) || isToday(bot.created_at);
+        if (!activeToday) return false;
+      }
+
+      // 2. Category Filter
+      const matchCategory = activeCategory === 'ALL' || bot.category === activeCategory;
+
+      // 3. Search Filter
+      const matchSearch =
+        bot.bot_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bot.telegram_username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        bot.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchCategory && matchSearch;
+    });
+  }, [sortedBots, timeFilter, activeCategory, searchQuery]);
 
   // Split bots: Top 3, 4-10, Rest
   const top3Bots = filteredBots.slice(0, 3);

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BotCategory } from '../types';
+import { BotCategory, BOT_CATEGORIES } from '../types';
 
 interface FilterBarProps {
   activeCategory: BotCategory;
@@ -12,12 +12,7 @@ interface FilterBarProps {
 
 const CATEGORIES: { id: BotCategory; label: string }[] = [
   { id: 'ALL', label: 'Semua' },
-  { id: 'DOWNLOADER', label: 'Downloader' },
-  { id: 'AI', label: 'AI & Chatbot' },
-  { id: 'ANON_CHAT', label: 'Anon Chat' },
-  { id: 'GAME', label: 'Mini Apps' },
-  { id: 'TOOLS', label: 'Tools' },
-  { id: 'STORE', label: 'Store & Topup' },
+  ...BOT_CATEGORIES,
 ];
 
 export const FilterBar: React.FC<FilterBarProps> = ({

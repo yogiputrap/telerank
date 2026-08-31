@@ -12,11 +12,14 @@ export async function POST(request: Request) {
     const username = String(body.telegramUsername || '').replace(/^https?:\/\/t\.me\//, '').replace(/^@/, '').trim().toLowerCase();
     const botName = String(body.botName || '').trim();
     const amount = Number(body.amount);
-    const category = String(body.category || 'DOWNLOADER');
+    let category = String(body.category || 'DOWNLOADER').toUpperCase().trim();
+    if (['AI', 'AI_GENERATOR', 'AI_GATEWAY', 'AI_COPILOT'].includes(category)) {
+      category = 'AI_TOOLS';
+    }
     const description = String(body.description || '').trim();
-    const allowedCategories = ['DOWNLOADER', 'AI', 'ANON_CHAT', 'GAME', 'TOOLS', 'STORE'];
+    const allowedCategories = ['DOWNLOADER', 'AI_TOOLS', 'ANON_CHAT', 'GAME', 'TOOLS', 'STORE'];
     const fieldErrors: string[] = [];
-    if (!username || !/^[a-zA-Z0-9_]{5,32}$/.test(username)) fieldErrors.push('telegramUsername');
+    if (!username || !/^[a-zA-Z0-9_]{5,32}$/.test(username) || !/bot$/i.test(username)) fieldErrors.push('telegramUsername');
     if (!botName || botName.length > 120) fieldErrors.push('botName');
     if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 9_000_000_000_000) fieldErrors.push('amount');
     if (description.length > 150) fieldErrors.push('description');

@@ -26,14 +26,14 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">1. Penerimaan Ketentuan</h2>
             <p>
-              Dengan mengakses dan menggunakan situs web TeleRank.id serta melakukan pendaftaran bot atau pembayaran sponsor, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan ini.
+              Dengan mengakses dan menggunakan situs web TeleRank serta melakukan pendaftaran bot atau pembayaran sponsor, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh Syarat & Ketentuan ini.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">2. Layanan Listing & Sponsorship</h2>
             <p>
-              TeleRank.id menyediakan platform leaderboard publik untuk menampilkan tautan bot Telegram. Peringkat tampilan ditentukan oleh besaran akumulasi nominal sponsor yang disetorkan pengguna melalui gateway pembayaran resmi.
+              TeleRank menyediakan platform leaderboard publik untuk menampilkan tautan bot Telegram. Peringkat tampilan ditentukan oleh besaran akumulasi nominal sponsor yang disetorkan pengguna melalui gateway pembayaran resmi.
             </p>
           </section>
 
@@ -47,14 +47,14 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">4. Tanggung Jawab Konten Bot</h2>
             <p>
-              Pemilik dan pengelola bot bertanggung jawab penuh atas segala konten, transaksi, dan layanan yang disediakan di dalam bot Telegram masing-masing. TeleRank.id tidak bertanggung jawab atas kerugian materiil maupun immateriil yang timbul akibat interaksi antara pengguna dengan bot pihak ketiga.
+              Pemilik dan pengelola bot bertanggung jawab penuh atas segala konten, transaksi, dan layanan yang disediakan di dalam bot Telegram masing-masing. TeleRank tidak bertanggung jawab atas kerugian materiil maupun immateriil yang timbul akibat interaksi antara pengguna dengan bot pihak ketiga.
             </p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#1c242b]">5. Hak Moderasi & Penghapusan Listing</h2>
             <p>
-              TeleRank.id berhak menghapus atau menonaktifkan listing bot tanpa pemberitahuan sebelumnya apabila bot tersebut terbukti melanggar hukum, melakukan penipuan, menyebarkan malware, atau melanggar kebijakan konten kami.
+              TeleRank berhak menghapus atau menonaktifkan listing bot tanpa pemberitahuan sebelumnya apabila bot tersebut terbukti melanggar hukum, melakukan penipuan, menyebarkan malware, atau melanggar kebijakan konten kami.
             </p>
           </section>
         </div>

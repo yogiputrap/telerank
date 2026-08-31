@@ -50,7 +50,7 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
             </span>
             <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
               <MgcBot size={13} className="text-sky-600" />
-              <span>AI Copilot</span>
+              <span>AI Tools</span>
             </span>
             <span className="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200 transition-colors flex items-center gap-1.5">
               <MgcMessage size={13} className="text-amber-600" />

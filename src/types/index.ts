@@ -1,4 +1,4 @@
-export type BotCategory = 'ALL' | 'DOWNLOADER' | 'AI' | 'ANON_CHAT' | 'GAME' | 'TOOLS' | 'STORE';
+export type BotCategory = 'ALL' | 'DOWNLOADER' | 'AI_TOOLS' | 'ANON_CHAT' | 'GAME' | 'TOOLS' | 'STORE';
 
 export interface Bot {
   id: string;
@@ -16,6 +16,7 @@ export interface Bot {
   is_online?: boolean;
   daily_clicks: number;
   created_at: string;
+  sponsor_updated_at?: string;
 }
 
 export interface OutbidNotification {
@@ -33,7 +34,7 @@ export interface OutbidNotification {
 export const CATEGORY_LABELS: Record<BotCategory, string> = {
   ALL: 'Semua',
   DOWNLOADER: 'Downloader',
-  AI: 'AI Copilot',
+  AI_TOOLS: 'AI Tools',
   ANON_CHAT: 'Anon Chat',
   GAME: 'Mini Apps',
   TOOLS: 'Developer & Tools',
@@ -42,7 +43,7 @@ export const CATEGORY_LABELS: Record<BotCategory, string> = {
 
 export const BOT_CATEGORIES: { id: BotCategory; label: string }[] = [
   { id: 'DOWNLOADER', label: 'Downloader' },
-  { id: 'AI', label: 'AI Copilot' },
+  { id: 'AI_TOOLS', label: 'AI Tools' },
   { id: 'ANON_CHAT', label: 'Anon Chat' },
   { id: 'GAME', label: 'Mini Apps' },
   { id: 'TOOLS', label: 'Developer & Tools' },

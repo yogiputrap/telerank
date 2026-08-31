@@ -56,7 +56,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
   // Auto-fetch Telegram bot info & avatar when username is typed
   useEffect(() => {
     const clean = username.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, '').trim();
-    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean)) {
+    if (!clean || clean.length < 5 || !/^[a-zA-Z0-9_]{5,32}$/.test(clean) || !/bot$/i.test(clean)) {
       setTgfetcHed(false);
       return;
     }
@@ -75,10 +75,12 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
           setAvatarUrl(data.avatarUrl);
         }
         if (data.botName) {
-          setBotName((prev) => (!prev || prev === clean ? data.botName : prev));
+          setBotName(data.botName);
+        } else {
+          setBotName(clean);
         }
-        if (data.description) {
-          setDescription((prev) => (!prev ? data.description : prev));
+        if (data.description !== undefined) {
+          setDescription(data.description);
         }
         setTgfetcHed(true);
       } catch (err) {
@@ -201,9 +203,9 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
               <input
                 type="text"
                 required
-                placeholder="UsernameBot_bot"
+                placeholder="NamaBot_bot (wajib akhiran 'bot')"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.replace(/^https?:\/\/t\.me\//i, '').replace(/^@/, ''))}
                 className="w-full pl-8 pr-10 py-2.5 rounded-xl text-xs text-[#1c242b] bg-[#f4f7fa] border border-[#e4ecf2] focus:outline-none focus:bg-white focus:border-[#3390ec]"
               />
               {isFetchingTg && (
@@ -212,6 +214,13 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                 </span>
               )}
             </div>
+
+            {username.trim().length >= 3 && !/bot$/i.test(username.trim()) && (
+              <p className="text-[11px] text-amber-600 font-semibold flex items-center gap-1 pt-0.5">
+                <MgcWarning size={12} className="shrink-0" />
+                <span>Username harus berakhiran kata <strong>"bot"</strong> (contoh: @NamaBot) agar bukan akun pribadi/channel/grup.</span>
+              </p>
+            )}
 
             {/* Telegram Profile Auto-Sync Preview Card */}
             {(isFetchingTg || tgFetched || avatarUrl) && username.trim().length >= 5 && (
@@ -234,9 +243,9 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1">
                     <span className="font-bold text-[11px] text-[#1c242b] truncate">
-                      {botName || `@${username.replace(/^@/, '')}`}
+                      {isFetchingTg ? `@${username.replace(/^@/, '')}` : (botName || `@${username.replace(/^@/, '')}`)}
                     </span>
-                    {tgFetched && (
+                    {tgFetched && !isFetchingTg && (
                       <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[9px] font-bold shrink-0">
                         <MgcCheckCircle size={9} />
                         Telegram Sync
@@ -384,7 +393,7 @@ export const PromosikanBotModal: React.FC<PromosikanBotModalProps> = ({
             {error && <p className="text-xs text-rose-600 font-semibold">{error}</p>}
             <button
               type="submit"
-              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000}
+              disabled={isSubmitting || !username.trim() || !botName.trim() || amount < 1000 || Boolean(usernameError(username))}
               className="w-full py-3 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <span>{isSubmitting ? 'Membuat Order...' : 'Lanjut Bayar QRIS Instan'}</span>

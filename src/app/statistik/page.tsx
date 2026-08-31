@@ -1,119 +1,68 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Header } from '../../components/Header';
 import { Footer } from '../../components/Footer';
+import { MgcExternalLink, MgcCheckCircle, MgcLoading } from '../../components/MingCuteIcons';
 
 export default function StatistikPage() {
+  const [isLoading, setIsLoading] = useState(true);
+  const umamiShareUrl = 'https://cloud.umami.is/share/6U05PReYqXSbTa3k';
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f2f5]">
       <Header />
 
-      <main className="flex-1 w-full max-w-3xl mx-auto px-4 py-8 space-y-6">
-        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-3">
-          <span className="px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
-            Live Metrics
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
-            Statistik Ekosistem Bot TeleRank
-          </h1>
-          <p className="text-xs sm:text-sm text-[#707579] leading-relaxed">
-            Data metrik performa publik, klik harian, dan distribusi kategori bot Telegram di Indonesia.
-          </p>
-        </div>
-
-        {/* 4 Big Metric Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div className="p-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-2xs space-y-1">
-            <span className="text-[10px] text-[#707579] font-bold uppercase">Total Bot Aktif</span>
-            <span className="block text-2xl font-black text-[#1c242b] font-mono">84</span>
-            <span className="text-[10px] text-emerald-600 font-semibold">+12 minggu ini</span>
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8 space-y-6">
+        {/* Header Title Card */}
+        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#eef5fc] text-[#3390ec] text-xs font-bold uppercase tracking-wider">
+                <MgcCheckCircle size={13} />
+                Live Public Analytics
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-[#707579] bg-[#f4f7fa] px-2 py-0.5 rounded-md font-semibold">
+                Powered by Umami
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1c242b] tracking-tight">
+              Statistik Trafik & Pengunjung TeleRank
+            </h1>
+            <p className="text-xs sm:text-sm text-[#707579] leading-relaxed">
+              Data analitik pengunjung, pageviews, dan performa trafik website TeleRank disajikan secara terbuka & transparan secara real-time.
+            </p>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-2xs space-y-1">
-            <span className="text-[10px] text-[#707579] font-bold uppercase">Total Klik Harian</span>
-            <span className="block text-2xl font-black text-[#3390ec] font-mono">14.820</span>
-            <span className="text-[10px] text-[#3390ec] font-semibold">Trafik organik</span>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-2xs space-y-1">
-            <span className="text-[10px] text-[#707579] font-bold uppercase">Volume Sponsor</span>
-            <span className="block text-xl sm:text-2xl font-black text-[#1c242b] font-mono">Rp4.8M</span>
-            <span className="text-[10px] text-emerald-600 font-semibold">Transparan QRIS</span>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white border border-[#e4ecf2] shadow-2xs space-y-1">
-            <span className="text-[10px] text-[#707579] font-bold uppercase">Uptime Server</span>
-            <span className="block text-2xl font-black text-emerald-600 font-mono">99.9%</span>
-            <span className="text-[10px] text-[#707579] font-semibold">24 Jam Nonstop</span>
+          <div className="shrink-0">
+            <a
+              href={umamiShareUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#3390ec] hover:bg-[#2481cc] active:scale-98 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+            >
+              <span>Buka di Tab Baru</span>
+              <MgcExternalLink size={13} />
+            </a>
           </div>
         </div>
 
-        {/* Category Breakdown (100% Identical Category Names) */}
-        <div className="rounded-2xl bg-white border border-[#e4ecf2] p-6 sm:p-8 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-[#1c242b]">Distribusi Kategori Bot Paling Populer</h2>
-
-          <div className="space-y-3 text-xs">
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>Downloader</span>
-                <span className="font-mono text-[#3390ec]">38% (32 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#3390ec] rounded-full" style={{ width: '38%' }} />
-              </div>
+        {/* Embedded Umami Dashboard */}
+        <div className="relative rounded-2xl bg-white border border-[#e4ecf2] shadow-xs overflow-hidden">
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/90 backdrop-blur-xs z-10 flex flex-col items-center justify-center gap-3 py-24 min-h-[500px]">
+              <MgcLoading size={32} className="text-[#3390ec]" />
+              <p className="text-xs text-[#707579] font-medium">Memuat data analitik live Umami...</p>
             </div>
+          )}
 
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>AI Copilot</span>
-                <span className="font-mono text-[#3390ec]">27% (23 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#5ea5e6] rounded-full" style={{ width: '27%' }} />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>Developer & Tools</span>
-                <span className="font-mono text-[#3390ec]">18% (15 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#20a39e] rounded-full" style={{ width: '18%' }} />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>Anon Chat</span>
-                <span className="font-mono text-[#3390ec]">11% (9 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#facc15] rounded-full" style={{ width: '11%' }} />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>Mini Apps</span>
-                <span className="font-mono text-[#3390ec]">6% (5 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#a2d2ff] rounded-full" style={{ width: '6%' }} />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex justify-between font-bold text-[#1c242b] mb-1">
-                <span>Store & Topup</span>
-                <span className="font-mono text-[#3390ec]">4% (3 bots)</span>
-              </div>
-              <div className="w-full h-2.5 rounded-full bg-[#f0f2f5] overflow-hidden">
-                <div className="h-full bg-[#ffd166] rounded-full" style={{ width: '4%' }} />
-              </div>
-            </div>
-          </div>
+          <iframe
+            src={umamiShareUrl}
+            onLoad={() => setIsLoading(false)}
+            className="w-full min-h-[950px] border-0 rounded-2xl"
+            title="TeleRank Live Analytics Umami"
+            allowFullScreen
+          />
         </div>
       </main>
 

@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
           <MgcTelegram size={14} />
         </div>
         <span className="text-[#1c242b] font-black text-sm">
-          TeleRank.id • Papan Peringkat Bot Telegram Indonesia
+          TeleRank • Papan Peringkat Bot Telegram Indonesia
         </span>
       </div>
 
@@ -54,7 +54,7 @@ export const Footer: React.FC = () => {
 
       {/* Meta & Copyright */}
       <div className="pt-2 text-[11px] text-[#707579] border-t border-[#e4ecf2]/60 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>© {new Date().getFullYear()} TeleRank.id. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} TeleRank. All rights reserved.</span>
         <a
           href="https://t.me"
           target="_blank"

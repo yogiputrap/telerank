@@ -15,6 +15,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
+      <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="8a719dbd-baf0-420b-aa86-567281849fd3"
+        />
+      </head>
       <body className="min-h-screen bg-[#f0f2f5] text-[#1c242b] antialiased selection:bg-[#3390ec] selection:text-white">
         {children}
         {/* Global Floating Action Button for Feedback & Help */}

@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     .trim()
     .toLowerCase();
 
-  if (!cleanUsername || !/^[a-zA-Z0-9_]{5,32}$/.test(cleanUsername)) {
+  if (!cleanUsername || !/^[a-zA-Z0-9_]{5,32}$/.test(cleanUsername) || !/bot$/i.test(cleanUsername)) {
     return NextResponse.json({ error: 'INVALID_USERNAME' }, { status: 400 });
   }
 
