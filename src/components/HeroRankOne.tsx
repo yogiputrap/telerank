@@ -88,7 +88,7 @@ export const HeroRankOne: React.FC<HeroRankOneProps> = ({ bot, onOutbidRankOne }
                 Rp {bot.total_bid_amount.toLocaleString('id-ID')}
               </div>
               <span className="text-[10px] text-emerald-400 font-medium flex items-center justify-center md:justify-end gap-1 mt-0.5">
-                <Zap className="w-3 h-3" /> ~{bot.daily_clicks.toLocaleString('id-ID')} Klik Pengunjung Hari Ini
+                <Zap className="w-3 h-3" /> ~{bot.daily_clicks.toLocaleString('id-ID')} Total Klik Pengunjung
               </span>
             </div>
 

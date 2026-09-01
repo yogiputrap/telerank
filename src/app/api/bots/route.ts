@@ -54,7 +54,34 @@ export async function GET(request: Request) {
     if (search) query = query.or(`bot_name.ilike.%${search}%,telegram_username.ilike.%${search}%,description.ilike.%${search}%`);
     const { data, error, count } = await query;
     if (error) throw error;
-    return NextResponse.json({ data: data ?? [], offset, limit, total: count ?? data?.length ?? 0 });
+
+    const botList = data ?? [];
+    const botIds = botList.map((b) => b.id).filter(Boolean);
+
+    if (botIds.length > 0) {
+      const { data: allStats } = await supabase
+        .from('bot_daily_stats')
+        .select('bot_id,detail_clicks,outbound_clicks')
+        .in('bot_id', botIds);
+
+      if (allStats && allStats.length > 0) {
+        const clicksMap = new Map<string, number>();
+        for (const row of allStats) {
+          const prev = clicksMap.get(row.bot_id) || 0;
+          clicksMap.set(
+            row.bot_id,
+            prev + (Number(row.detail_clicks) || 0) + (Number(row.outbound_clicks) || 0)
+          );
+        }
+        for (const bot of botList) {
+          if (clicksMap.has(bot.id)) {
+            bot.daily_clicks = clicksMap.get(bot.id) ?? 0;
+          }
+        }
+      }
+    }
+
+    return NextResponse.json({ data: botList, offset, limit, total: count ?? botList.length });
   } catch (error) {
     console.error('GET /api/bots failed', error);
     return NextResponse.json({ error: 'BACKEND_UNAVAILABLE' }, { status: 503 });
