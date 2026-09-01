@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { MgcClose, MgcFlash, MgcArrowRight } from './MingCuteIcons';
+import { useLockBodyScroll } from '../lib/useLockBodyScroll';
 import { Bot } from '../types';
 
 interface TopUpBidModalProps {
@@ -21,6 +22,8 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
   currentBots,
   onProceedToPayment,
 }) => {
+  useLockBodyScroll(isOpen);
+
   const [addAmount, setAddAmount] = useState<number>(10000);
 
   if (!isOpen || !bot) return null;
@@ -34,8 +37,11 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl space-y-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs overscroll-contain touch-none animate-in fade-in duration-200"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-md max-h-[92vh] overflow-y-auto overscroll-contain touch-auto rounded-2xl bg-white border border-slate-200 p-6 shadow-2xl space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">

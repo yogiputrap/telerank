@@ -13,6 +13,7 @@ import {
   MgcLightbulb,
   MgcBug,
 } from './MingCuteIcons';
+import { useLockBodyScroll } from '../lib/useLockBodyScroll';
 
 const FAQS = [
   {
@@ -35,6 +36,8 @@ const FAQS = [
 
 export const FloatingFeedbackSupport: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  useLockBodyScroll(isOpen);
+
   const [activeTab, setActiveTab] = useState<'FEEDBACK' | 'HELP'>('FEEDBACK');
 
   // Feedback form state
@@ -85,8 +88,11 @@ export const FloatingFeedbackSupport: React.FC = () => {
 
       {/* 2. Interactive Dialog Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overscroll-contain touch-none animate-in fade-in duration-200"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}
+        >
+          <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto overscroll-contain touch-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
             {/* Modal Top Header */}
             <div className="flex items-center justify-between pb-3 border-b border-[#e4ecf2]">
               <div className="flex items-center gap-2.5">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Bot as BotIcon, Sparkles, ArrowRight } from 'lucide-react';
 import { MgcWarning } from './MingCuteIcons';
 import { usernameError } from '../lib/orderErrors';
+import { useLockBodyScroll } from '../lib/useLockBodyScroll';
 import { Bot, BotCategory, BOT_CATEGORIES } from '../types';
 
 interface SubmitBotModalProps {
@@ -19,6 +20,8 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   currentBots,
   onProceedToPayment,
 }) => {
+  useLockBodyScroll(isOpen);
+
   const [telegramUsername, setTelegramUsername] = useState('');
   const [botName, setBotName] = useState('');
   const [description, setDescription] = useState('');
@@ -109,8 +112,11 @@ export const SubmitBotModal: React.FC<SubmitBotModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto no-scrollbar rounded-2xl bg-white border border-slate-200 p-5 sm:p-8 shadow-2xl space-y-5">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overscroll-contain touch-none animate-in fade-in duration-200"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto overscroll-contain touch-auto no-scrollbar rounded-2xl bg-white border border-slate-200 p-5 sm:p-8 shadow-2xl space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2.5">

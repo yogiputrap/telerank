@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { MgcClose, MgcExternalLink, MgcTelegram, MgcCheckCircle } from './MingCuteIcons';
+import { useLockBodyScroll } from '../lib/useLockBodyScroll';
 import { Bot, CATEGORY_LABELS } from '../types';
 
 interface BotDetailModalProps {
@@ -19,13 +20,18 @@ export const BotDetailModal: React.FC<BotDetailModalProps> = ({
   rank,
   onRebut,
 }) => {
+  useLockBodyScroll(isOpen);
+
   if (!isOpen || !bot) return null;
 
   const categoryName = CATEGORY_LABELS[bot.category] || bot.category;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overscroll-contain touch-none animate-in fade-in duration-200"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto overscroll-contain touch-auto rounded-2xl bg-white border border-[#e4ecf2] p-5 sm:p-7 shadow-2xl space-y-4">
         {/* Header: Verified checkmark is placed INLINE right after the bot name */}
         <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-[#e4ecf2]">
           <div className="flex items-start gap-3 min-w-0 flex-1">

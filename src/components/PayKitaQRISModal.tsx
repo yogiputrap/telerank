@@ -17,6 +17,7 @@ import {
   MgcArrowRight,
 } from './MingCuteIcons';
 import { generateInvoicePDF } from '../lib/invoiceGenerator';
+import { useLockBodyScroll } from '../lib/useLockBodyScroll';
 
 interface PayKitaQRISModalProps {
   isOpen: boolean;
@@ -43,6 +44,7 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
   orderData,
   onPaymentSuccess,
 }) => {
+  useLockBodyScroll(isOpen);
   const [timeLeft, setTimeLeft] = useState(0);
   const [copied, setCopied] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
@@ -193,8 +195,11 @@ export const PayKitaQRISModal: React.FC<PayKitaQRISModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md max-h-[94vh] overflow-y-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-4 sm:p-6 shadow-2xl space-y-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs overscroll-contain touch-none animate-in fade-in duration-200"
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="relative w-full max-w-md max-h-[94vh] overflow-y-auto overscroll-contain touch-auto no-scrollbar rounded-2xl bg-white border border-[#e4ecf2] p-4 sm:p-6 shadow-2xl space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[#e4ecf2]">
           <div className="flex items-center gap-2">
