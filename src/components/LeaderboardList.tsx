@@ -38,6 +38,11 @@ export const LeaderboardList: React.FC<LeaderboardListProps> = ({
                 <img
                   src={bot.avatar_url}
                   alt={bot.bot_name}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot.telegram_username || bot.bot_name || 'bot'}`;
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover border border-slate-200 shrink-0"
                 />
 

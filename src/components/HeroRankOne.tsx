@@ -29,6 +29,11 @@ export const HeroRankOne: React.FC<HeroRankOneProps> = ({ bot, onOutbidRankOne }
                 <img
                   src={bot.avatar_url}
                   alt={bot.bot_name}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot.telegram_username || bot.bot_name || 'bot'}`;
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>

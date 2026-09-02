@@ -85,6 +85,11 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank2.avatar_url}
                   alt={rank2.bot_name}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${rank2.telegram_username || rank2.bot_name || 'bot'}`;
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
                   className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
                 />
                 <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-lg bg-sky-500 text-white font-bold text-[10px] shadow">
@@ -114,6 +119,11 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank1.avatar_url}
                   alt={rank1.bot_name}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${rank1.telegram_username || rank1.bot_name || 'bot'}`;
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
                   className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-4 border-amber-300 shadow-xl group-hover:scale-105 transition-transform"
                 />
                 <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.2 rounded-lg bg-amber-500 text-white font-extrabold text-[10px] uppercase tracking-wider shadow">
@@ -140,6 +150,11 @@ export const HeroPodium: React.FC<HeroPodiumProps> = ({
                 <img
                   src={rank3.avatar_url}
                   alt={rank3.bot_name}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${rank3.telegram_username || rank3.bot_name || 'bot'}`;
+                    if (target.src !== fallback) target.src = fallback;
+                  }}
                   className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-white shadow-md group-hover:scale-105 transition-transform"
                 />
                 <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-lg bg-orange-500 text-white font-bold text-[10px] shadow">

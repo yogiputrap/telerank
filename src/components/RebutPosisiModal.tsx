@@ -216,6 +216,11 @@ export const RebutPosisiModal: React.FC<RebutPosisiModalProps> = ({
           <img
             src={targetBot.avatar_url}
             alt={targetBot.bot_name}
+            onError={(e) => {
+              const target = e.currentTarget;
+              const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${targetBot.telegram_username || targetBot.bot_name || 'bot'}`;
+              if (target.src !== fallback) target.src = fallback;
+            }}
             className="w-10 h-10 rounded-xl object-cover border border-[#e4ecf2] shrink-0"
           />
           <div className="min-w-0 flex-1">

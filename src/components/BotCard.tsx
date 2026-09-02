@@ -59,6 +59,11 @@ export const BotCard: React.FC<BotCardProps> = ({
               height={48}
               loading="lazy"
               decoding="async"
+              onError={(e) => {
+                const target = e.currentTarget;
+                const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot.telegram_username || bot.bot_name || 'bot'}`;
+                if (target.src !== fallback) target.src = fallback;
+              }}
               className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-cover border ${
                 isRank1
                   ? 'border-amber-300'

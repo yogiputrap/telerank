@@ -40,6 +40,9 @@ export async function GET(request: Request) {
       is_online: bot.is_online,
       created_at: bot.created_at,
       sponsor_updated_at: bot.sponsor_updated_at,
+    })).map((bot) => ({
+      ...bot,
+      avatar_url: !bot.avatar_url || bot.avatar_url.includes('telesco.pe') ? `/api/avatar/${bot.telegram_username}` : bot.avatar_url,
     }));
     return NextResponse.json({ data: sliced, offset, limit, total: filtered.length, source: 'local_fallback' });
   }
@@ -78,6 +81,12 @@ export async function GET(request: Request) {
             bot.daily_clicks = clicksMap.get(bot.id) ?? 0;
           }
         }
+      }
+    }
+
+    for (const bot of botList) {
+      if (!bot.avatar_url || bot.avatar_url.includes('telesco.pe')) {
+        bot.avatar_url = `/api/avatar/${bot.telegram_username}`;
       }
     }
 

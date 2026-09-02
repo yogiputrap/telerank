@@ -141,6 +141,11 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                     width={52}
                     height={52}
                     decoding="async"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot2.telegram_username || bot2.bot_name || 'bot'}`;
+                      if (target.src !== fallback) target.src = fallback;
+                    }}
                     className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p2:ring-2 group-hover/p2:ring-[#a2d2ff]"
                   />
                 </div>
@@ -188,6 +193,11 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                     width={64}
                     height={64}
                     decoding="async"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot1.telegram_username || bot1.bot_name || 'bot'}`;
+                      if (target.src !== fallback) target.src = fallback;
+                    }}
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-3 border-[#3390ec] shadow-lg group-hover/p1:scale-105 transition-transform"
                   />
                 </div>
@@ -235,6 +245,11 @@ export const HeroPodiumCard: React.FC<HeroPodiumCardProps> = ({
                     width={48}
                     height={48}
                     decoding="async"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot3.telegram_username || bot3.bot_name || 'bot'}`;
+                      if (target.src !== fallback) target.src = fallback;
+                    }}
                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover border-2 border-white shadow-md group-hover/p3:ring-2 group-hover/p3:ring-[#80beea]"
                   />
                 </div>

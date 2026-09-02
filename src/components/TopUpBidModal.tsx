@@ -63,7 +63,16 @@ export const TopUpBidModal: React.FC<TopUpBidModalProps> = ({
 
         {/* Bot Info */}
         <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100">
-          <img src={bot.avatar_url} alt={bot.bot_name} className="w-10 h-10 rounded-xl object-cover" />
+          <img
+            src={bot.avatar_url}
+            alt={bot.bot_name}
+            onError={(e) => {
+              const target = e.currentTarget;
+              const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot.telegram_username || bot.bot_name || 'bot'}`;
+              if (target.src !== fallback) target.src = fallback;
+            }}
+            className="w-10 h-10 rounded-xl object-cover"
+          />
           <div className="min-w-0 flex-1">
             <h4 className="font-bold text-xs text-slate-900 truncate">{bot.bot_name}</h4>
             <p className="text-[11px] font-mono text-slate-500">@{bot.telegram_username} • Posisi #{currentRank}</p>

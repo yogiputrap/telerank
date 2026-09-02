@@ -40,7 +40,9 @@ export async function POST(request: Request) {
     if (existing && amount <= existing.current_sponsor_amount) return NextResponse.json({ error: 'AMOUNT_MUST_INCREASE' }, { status: 409 });
 
     const rawAvatar = String(body.avatarUrl || '').trim();
-    const avatarUrl = isValidHttpsUrl(rawAvatar) ? rawAvatar : `https://api.dicebear.com/7.x/bottts/svg?seed=${username}`;
+    const avatarUrl = isValidHttpsUrl(rawAvatar) && !rawAvatar.includes('telesco.pe')
+      ? rawAvatar
+      : `/api/avatar/${username}`;
 
     const { data: order, error: insertError } = await supabase.from('payment_orders').insert({
       bot_id: existing?.id ?? null,

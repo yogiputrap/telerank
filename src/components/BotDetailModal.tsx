@@ -39,6 +39,11 @@ export const BotDetailModal: React.FC<BotDetailModalProps> = ({
               <img
                 src={bot.avatar_url}
                 alt={bot.bot_name}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const fallback = `https://api.dicebear.com/7.x/bottts/svg?seed=${bot.telegram_username || bot.bot_name || 'bot'}`;
+                  if (target.src !== fallback) target.src = fallback;
+                }}
                 className="w-12 h-12 rounded-2xl object-cover border border-[#e4ecf2]"
               />
               <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-[#4cd964] border-2 border-white" />
